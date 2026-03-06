@@ -620,7 +620,7 @@ export default function UploadPage() {
                 Nahrát ZIP s fotkami
               </CardTitle>
               <CardDescription>
-                Podporujeme JPG, PNG, ZIP (max 100MB)
+                Podporujeme JPG, PNG, ZIP (max 100MB). Po nahrání se automaticky vygenerují popisky k fotkám (DeepSeek AI, max 120 znaků).
               </CardDescription>
             </CardHeader>
             <CardContent>

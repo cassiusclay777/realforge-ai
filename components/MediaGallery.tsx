@@ -10,6 +10,7 @@ export interface MediaGalleryItem {
   processingStatus?: string;
   aiCaption?: string | null;
   aiDescription?: string | null;
+  altText?: string | null;
   isFeatured?: boolean;
   sortOrder?: number;
 }
@@ -69,7 +70,7 @@ export default function MediaGallery({ media, compact = true, className = "" }: 
           >
             <img
               src={m.url.startsWith("/") ? m.url : `/${m.url}`}
-              alt={(m as { altText?: string | null }).altText || m.aiCaption || m.category || "Foto"}
+              alt={m.altText || m.aiCaption || m.category || "Foto"}
               className="w-full h-full object-cover"
             />
           </button>
@@ -115,7 +116,7 @@ export default function MediaGallery({ media, compact = true, className = "" }: 
           >
             <img
               src={selected.url.startsWith("/") ? selected.url : `/${selected.url}`}
-              alt={(selected as { altText?: string | null }).altText || selected.aiCaption || selected.category || "Foto"}
+              alt={selected.altText || selected.aiCaption || selected.category || "Foto"}
               className="max-w-full max-h-[85vh] w-auto h-auto object-contain rounded"
             />
           </div>

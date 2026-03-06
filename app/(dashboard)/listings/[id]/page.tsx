@@ -29,6 +29,7 @@ export default async function ListingDetailPage({
             processingStatus: true,
             aiDescription: true,
             aiCaption: true,
+            altText: true,
             isFeatured: true,
             sortOrder: true,
           },
