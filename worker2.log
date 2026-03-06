@@ -1,0 +1,744 @@
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (17) from .env.local -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+✅ BullMQ image-process-deepseek worker started
+✅ Redis connected for BullMQ worker
+🔄 DeepSeek processing job 16 for listing cmmats8hg0001x2vt8mygy726
+✅ Prisma client loaded successfully
+📁 Extracting ZIP from C:\Users\Patri\REALFORGE-AI\public\uploads\cmmats8hg0001x2vt8mygy726-Prodej zahrady 756m2v Moravském Krumlově.zip
+📸 Found 17 image files in ZIP
+🤖 VisionAnalyzer initialized with DeepSeek API
+📊 Creating 17 placeholder records with PROCESSING status
+📝 Created placeholder for image 1 with ID: cmmaudiev00019sk6x2tli37p
+📝 Created placeholder for image 2 with ID: cmmaudif300039sk66i5zjspl
+📝 Created placeholder for image 3 with ID: cmmaudif700059sk6nisxsva0
+📝 Created placeholder for image 4 with ID: cmmaudif900079sk62l4c47kp
+📝 Created placeholder for image 5 with ID: cmmaudifc00099sk6iy6atkcw
+📝 Created placeholder for image 6 with ID: cmmaudife000b9sk6krivsg62
+📝 Created placeholder for image 7 with ID: cmmaudifg000d9sk6n9s8eog9
+📝 Created placeholder for image 8 with ID: cmmaudifi000f9sk6bv5alqxk
+📝 Created placeholder for image 9 with ID: cmmaudifl000h9sk6skhdduxp
+📝 Created placeholder for image 10 with ID: cmmaudifn000j9sk6wkq7hq2h
+📝 Created placeholder for image 11 with ID: cmmaudifp000l9sk6buv1cvkq
+📝 Created placeholder for image 12 with ID: cmmaudifr000n9sk6q29vyc0f
+📝 Created placeholder for image 13 with ID: cmmaudift000p9sk6pmkpkxo2
+📝 Created placeholder for image 14 with ID: cmmaudifv000r9sk63yxbnxx7
+📝 Created placeholder for image 15 with ID: cmmaudifx000t9sk6i4mj20o2
+📝 Created placeholder for image 16 with ID: cmmaudifz000v9sk6ys5kd0tz
+📝 Created placeholder for image 17 with ID: cmmaudig1000x9sk61n72kb3i
+📸 Processing image 1/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:22 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '11f57fcf0882119a537bdda1eac82571',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'tlNqqFbxHeiUzLRSmFbIC_q3Ax-aX_lh5RF6d20n2iJn95t7uXKO4w=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: LIVING_ROOM - Fotka 1 nemovitosti
+   🏷️  Popisek: Fotka 1 - living room
+   ⭐ Důležitost: 50/100
+✅ Updated image 1 with AI analysis
+📸 Processing image 2/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:23 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '5a55b70c1c4cda0375a9045a02f74be2',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'kmt4MX08rw3SZg8giU2_36kf20W6zlz1G2bsrl-cN3gS01rp5HrLvA=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: KITCHEN - Fotka 2 nemovitosti
+   🏷️  Popisek: Fotka 2 - kitchen
+   ⭐ Důležitost: 50/100
+✅ Updated image 2 with AI analysis
+📸 Processing image 3/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:24 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': 'baa572b606d1db3f1a02d94f4a0f6ae1',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'pAWoXhP71Y3vV6XFLzQFRdkJbr4k_qUpT0LV23qtxEHELqY8y0Q4rA=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: BEDROOM - Fotka 3 nemovitosti
+   🏷️  Popisek: Fotka 3 - bedroom
+   ⭐ Důležitost: 50/100
+✅ Updated image 3 with AI analysis
+📸 Processing image 4/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:25 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '51446205ca2c5e0ca0f0f50f81fc2f94',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': '8dgHXnNW5CurJ_51DFevWn4tC3mcyTH_sxnNhTLBX75e8Onql4clhA=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: BATHROOM - Fotka 4 nemovitosti
+   🏷️  Popisek: Fotka 4 - bathroom
+   ⭐ Důležitost: 50/100
+✅ Updated image 4 with AI analysis
+📸 Processing image 5/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:26 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '7c1daf6dbbbe6f0724444bcb2b400460',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'YZBfo4UTHofBtAJjTTS5O2R4Q7DtymviaIWuc994EZbO1wn4q0ECcQ=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: HALLWAY - Fotka 5 nemovitosti
+   🏷️  Popisek: Fotka 5 - hallway
+   ⭐ Důležitost: 50/100
+✅ Updated image 5 with AI analysis
+📸 Processing image 6/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:26 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '91ede3fd6f7d694febb3260ee95f76a7',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'tg2vgoEH9x0DSnhzQNx1RZP1TOdvs22XeaDmxSsHqlSNII0rNGaHQw=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: FACADE - Fotka 6 nemovitosti
+   🏷️  Popisek: Fotka 6 - facade
+   ⭐ Důležitost: 50/100
+✅ Updated image 6 with AI analysis
+📸 Processing image 7/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:27 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': 'a473f9f1f91893d8b4f6fd638bf374ca',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': '5yQfux1yRN06_CoReg3M_S21RVizH-_jpLNtimeKUM7462xIcfm2xQ=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: LIVING_ROOM - Fotka 7 nemovitosti
+   🏷️  Popisek: Fotka 7 - living room
+   ⭐ Důležitost: 50/100
+✅ Updated image 7 with AI analysis
+📸 Processing image 8/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:28 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '2353cfe347a198e7986beaaee53128bd',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'uVqHbS8NtCz3enhfvMfvzBMtDpZu14h0j0RUfZOj2wtXUlw_Ps0lyA=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: KITCHEN - Fotka 8 nemovitosti
+   🏷️  Popisek: Fotka 8 - kitchen
+   ⭐ Důležitost: 50/100
+✅ Updated image 8 with AI analysis
+📸 Processing image 9/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:29 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': 'd0d2afd2d1bc24021c398b0acfa8990d',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'MQT2HnKbicviRXwEbREHxYmOkhGICU1ea0GvRPkHejKvIAIR9GKEdA=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: BEDROOM - Fotka 9 nemovitosti
+   🏷️  Popisek: Fotka 9 - bedroom
+   ⭐ Důležitost: 50/100
+✅ Updated image 9 with AI analysis
+📸 Processing image 10/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:30 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '0ea2b6ab5eb792f237c56ece5185b737',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': '2vy7X2e7if3nVFTqYas2gVu4aPfANPVSj_IxYMYKIWOK5l3Vx2G0RQ=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: BATHROOM - Fotka 10 nemovitosti
+   🏷️  Popisek: Fotka 10 - bathroom
+   ⭐ Důležitost: 50/100
+✅ Updated image 10 with AI analysis
+📸 Processing image 11/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:31 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '263bc1ca9acf1f662d0294d0579f4ab0',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'M7tsm5Gv4yZ5rWGvIUxbNsm9ytUcInaa1fuHqZZzY8iTN4nL80UjDA=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: HALLWAY - Fotka 11 nemovitosti
+   🏷️  Popisek: Fotka 11 - hallway
+   ⭐ Důležitost: 50/100
+✅ Updated image 11 with AI analysis
+📸 Processing image 12/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:32 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '099f2bfc3295ece5879a8f7eef9ff1bd',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'bZBuCBS7giKX07fPli1GH25_Y1Gr-qO4-fET6bRCWlCfIWh9S5gTQA=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: FACADE - Fotka 12 nemovitosti
+   🏷️  Popisek: Fotka 12 - facade
+   ⭐ Důležitost: 50/100
+✅ Updated image 12 with AI analysis
+📸 Processing image 13/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:33 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': 'c843787434cbbaba165e89fea9a361d6',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': '8mrk75s7XjNeyPAMnKOI1P4I-r84OOpv0WHaBPEIsJJhJdmJcoDg6g=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: LIVING_ROOM - Fotka 13 nemovitosti
+   🏷️  Popisek: Fotka 13 - living room
+   ⭐ Důležitost: 50/100
+✅ Updated image 13 with AI analysis
+📸 Processing image 14/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:34 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '1a515b43a5e4728205531e35bdadb1fa',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'KyRmE3EDJKbt1MawUOAE06VR2tss4LQKtI-OVElse0TMe24CQp7S0g=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: KITCHEN - Fotka 14 nemovitosti
+   🏷️  Popisek: Fotka 14 - kitchen
+   ⭐ Důležitost: 50/100
+✅ Updated image 14 with AI analysis
+📸 Processing image 15/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:35 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': 'b95ec4f03fefc180472dbbecc3bc3064',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'BQ1i5iDTQCsH7VHaJbZlPuZSAZE3IgOMNiSiUJ3yOX9skuwcVQA0Lg=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: BEDROOM - Fotka 15 nemovitosti
+   🏷️  Popisek: Fotka 15 - bedroom
+   ⭐ Důležitost: 50/100
+✅ Updated image 15 with AI analysis
+📸 Processing image 16/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:36 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '11b3768237ccc47c6b56fbed8d1b0db2',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': 'KQ5xCguaLKxvO832ROZmyniRTBthXB0Na0Umg6Hort5hrFEGHZvXHg=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: BATHROOM - Fotka 16 nemovitosti
+   🏷️  Popisek: Fotka 16 - bathroom
+   ⭐ Důležitost: 50/100
+✅ Updated image 16 with AI analysis
+📸 Processing image 17/17...
+Chyba při analýze fotky: AuthenticationError: 401 Authentication Fails, Your api key: ****cbb7 is invalid
+    at APIError.generate (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\core\error.ts:76:14)
+    at OpenAI.makeStatusError (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:488:28)
+    at OpenAI.makeRequest (C:\Users\Patri\REALFORGE-AI\node_modules\openai\src\client.ts:738:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async VisionAnalyzer.analyzePhoto (C:\Users\Patri\REALFORGE-AI\lib\vision-analyzer.ts:29:24)
+    at async Worker.import_bullmq.Worker.connection (C:\Users\Patri\REALFORGE-AI\workers\image-process-deepseek.ts:279:24)
+    at async <anonymous> (C:\Users\Patri\REALFORGE-AI\node_modules\bullmq\src\classes\worker.ts:998:26) {
+  status: 401,
+  headers: Headers {
+    'content-type': 'application/json',
+    'content-length': '153',
+    connection: 'keep-alive',
+    date: 'Tue, 03 Mar 2026 16:48:37 GMT',
+    server: 'elb',
+    vary: 'origin, access-control-request-method, access-control-request-headers',
+    'access-control-allow-credentials': 'true',
+    'x-ds-trace-id': '6be077d485c5a2214c9d150a899234a6',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-cache': 'Error from cloudfront',
+    via: '1.1 a84e87b6b82308dbc0e331c3e28c23c6.cloudfront.net (CloudFront)',
+    'x-amz-cf-pop': 'FRA60-P6',
+    'x-amz-cf-id': '-tebVsr3eywWkxIauSjdJRGPOA5Kcs4WEsNq8CLQ0iboPXnjb_DqAA=='
+  },
+  requestID: null,
+  error: {
+    message: 'Authentication Fails, Your api key: ****cbb7 is invalid',
+    type: 'authentication_error',
+    param: null,
+    code: 'invalid_request_error'
+  },
+  code: 'invalid_request_error',
+  param: null,
+  type: 'authentication_error'
+}
+⚠ AI analysis failed, using fallback mock data
+   📍 Místnost: HALLWAY - Fotka 17 nemovitosti
+   🏷️  Popisek: Fotka 17 - hallway
+   ⭐ Důležitost: 50/100
+✅ Updated image 17 with AI analysis
+✅ Extracted and analyzed 17 images
+✅ Job 16 completed successfully with 17 images
+🎉 Job 16 has completed!

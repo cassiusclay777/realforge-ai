@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REALFORGE AI - UI Preview</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1a202c;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #718096;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        .card h3 {
+            color: #2d3748;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h3::before {
+            content: "✓";
+            background: #48bb78;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .feature {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+        .feature.highlight {
+            background: linear-gradient(135deg, #f6ad55, #ed8936);
+            color: white;
+            border: none;
+        }
+        .demo-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .demo-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #48bb78;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 15px;
+        }
+        .colors {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .color {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+        }
+        .color-amber { background: #f6ad55; }
+        .color-rose { background: #ed64a6; }
+        .color-sky { background: #63b3ed; }
+        .color-slate { background: #4a5568; }
+        .color-emerald { background: #48bb78; }
+        .color-blue { background: #4299e1; }
+        .color-gray { background: #718096; }
+        .color-purple { background: #9f7aea; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 REALFORGE AI - Premium UI Upgrade</h1>
+        <div class="subtitle">Kompletní redesign listing detail page s ohromujícím UI</div>
+        
+        <div class="status">✅ Implementováno</div>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>GalleryGrid.tsx</h3>
+                <p>Responsive mřížka fotek (2-4 sloupce) s:</p>
+                <div class="features">
+                    <div class="feature highlight">Hlavní fotka s FEATURED badge</div>
+                    <div class="feature">Zlatý rámeček (border-amber-500)</div>
+                    <div class="feature">Skew efekt a hover animace</div>
+                    <div class="feature">Barevné karty podle kategorie</div>
+                </div>
+                <div class="colors">
+                    <div class="color color-amber" title="Kuchyň"></div>
+                    <div class="color color-rose" title="Ložnice"></div>
+                    <div class="color color-sky" title="Koupelna"></div>
+                    <div class="color color-slate" title="Fasáda"></div>
+                    <div class="color color-emerald" title="Obývák"></div>
+                    <div class="color color-blue" title="Reklama"></div>
+                    <div class="color color-gray" title="Skryté"></div>
+                    <div class="color color-purple" title="Chodba"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>AISummaryCard.tsx</h3>
+                <p>Vizuálně zvýrazněný AI obsah s:</p>
+                <div class="features">
+                    <div class="feature highlight">Confidence score 85%</div>
+                    <div class="feature">Podtržené nadpisy</div>
+                    <div class="feature">Gradient pozadí</div>
+                    <div class="feature">Cílová skupina karta</div>
+                    <div class="feature">AI doporučení ceny</div>
+                    <div class="feature">SEO optimalizace</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>AnimatedProgress.tsx</h3>
+                <p>Animovaný progress indikátor s:</p>
+                <div class="features">
+                    <div class="feature highlight">animate-pulse</div>
+                    <div class="feature">Bounce efekt při dokončení</div>
+                    <div class="feature">Animované tečky</div>
+                    <div class="feature">Celebration overlay</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>ActionButtons.tsx</h3>
+                <p>Premium akční tlačítka:</p>
+                <div class="features">
+                    <div class="feature highlight">🇨🇿 Export to Sreality</div>
+                    <div class="feature">🌐 Share on Social</div>
+                    <div class="feature">hover:scale-105 efekt</div>
+                    <div class="feature">Zlatá a modrá gradient</div>
+                    <div class="feature">Shine animace</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>NextStepsCard.tsx</h3>
+                <p>Karty s dalšími kroky:</p>
+                <div class="features">
+                    <div class="feature">Barevné gradienty</div>
+                    <div class="feature">Ikony pro každý krok</div>
+                    <div class="feature">Progress indikátory</div>
+                    <div class="feature">Hover efekty</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>CategoryIcons.tsx</h3>
+                <p>SVG ikony pro kategorie:</p>
+                <div class="features">
+                    <div class="feature">Kuchyň</div>
+                    <div class="feature">Ložnice</div>
+                    <div class="feature">Koupelna</div>
+                    <div class="feature">Obývák</div>
+                    <div class="feature">Fasáda</div>
+                    <div class="feature">Reklama</div>
+                    <div class="feature">Skryté</div>
+                    <div class="feature">Chodba</div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 style="margin-top: 50px;">🎯 Implementované funkce</h2>
+        <ul style="color: #4a5568; line-height: 1.8;">
+            <li><strong>Responsive design</strong> - plně responzivní pro všechny zařízení</li>
+            <li><strong>Dark mode ready</strong> - připraveno pro tmavý režim</li>
+            <li><strong>Tailwind CSS</strong> - využití utility tříd</li>
+            <li><strong>shadcn/ui komponenty</strong> - Card, Badge, Button, Progress</li>
+            <li><strong>Animace a přechody</strong> - hover efekty, scale, opacity</li>
+            <li><strong>Typografie</strong> - text-4xl, text-2xl, text-base podle specifikace</li>
+            <li><strong>Gradienty a stíny</strong> - premium vizuální efekty</li>
+        </ul>
+        
+        <a href="http://localhost:3002/listings/7d27bb15-5537-4e47-a331-31f1399ee86f" class="demo-link" target="_blank">
+            🚀 Otevřít demo listing detail page
+        </a>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #f0fff4; border-radius: 10px; border-left: 4px solid #48bb78;">
+            <strong>📝 Poznámka:</strong> Pro plné testování potřebujete mít běžící development server na <code>localhost:3002</code> a nějaká data v databázi. Pokud listing neexistuje, zobrazí se loading skeleton nebo error state.
+        </div>
+    </div>
+</body>
+</html>

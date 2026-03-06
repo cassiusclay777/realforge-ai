@@ -1,0 +1,263 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("AGENT")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  // Link to existing Agent model
+  agent Agent?
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum ListingType {
+  APARTMENT
+  HOUSE
+  LAND
+}
+
+enum ListingStatus {
+  NEW
+  ACTIVE
+  RESERVED
+  SOLD
+}
+
+enum MediaCategory {
+  LIVING_ROOM
+  KITCHEN
+  BATHROOM
+  BEDROOM
+  HALLWAY
+  FACADE
+  GARDEN
+  ADVERTISEMENT
+  HIDDEN
+}
+
+enum MediaProcessingStatus {
+  QUEUED
+  PROCESSING
+  DONE
+  FAILED
+}
+
+enum LeadSource {
+  SREALITY
+  BEZREALITKY
+  FACEBOOK
+  INSTAGRAM
+  WEB
+  REFERRAL
+  PERSONAL
+}
+
+enum LeadStatus {
+  NEW
+  INITIAL_CONTACT
+  PROSPECT
+  RESERVATION
+  SOLD
+  LOST
+}
+
+enum LogType {
+  EMAIL
+  CALL
+  SMS
+  LETTER
+  MEETING
+}
+
+enum ExportPlatform {
+  SREALITY
+  BEZREALITKY
+  FACEBOOK_MARKETPLACE
+  INSTAGRAM
+  PDF
+  WEB
+  EMAIL_CAMPAIGN
+}
+
+enum ExportStatus {
+  PREPARING
+  READY
+  PUBLISHING
+  PUBLISHED
+  FAILED
+}
+
+model Agent {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  officeId  String?
+  office    Office?  @relation(fields: [officeId], references: [id])
+  listings  Listing[]
+  leads     CRMLead[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Link to User model
+  userId    String?  @unique
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+model Office {
+  id        String   @id @default(cuid())
+  name      String
+  branding  Json?
+  settings  Json
+  agents    Agent[]
+}
+
+model Listing {
+  id        String         @id @default(cuid())
+  title     String
+  address   String
+  type      ListingType
+  area      Float?
+  price     Int
+  rooms     Int?
+  floor     Int?
+  yearBuilt Int?
+  status    ListingStatus  @default(NEW)
+  agentId   String?
+  agent     Agent?         @relation(fields: [agentId], references: [id])
+  media     ListingMedia[]
+  aiResult  AIResult?
+  leads     CRMLead[]
+  exports   ExportJob[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model ListingMedia {
+  id                String                 @id @default(cuid())
+  url               String
+  thumbnailUrl      String?
+  originalName      String
+  category          MediaCategory
+  isFeatured        Boolean                @default(false)
+  isHidden          Boolean                @default(false)
+  sortOrder         Int                    @default(0)
+  listingId         String
+  listing           Listing                @relation(fields: [listingId], references: [id])
+  processedAt       DateTime?
+  processingStatus  MediaProcessingStatus
+  aiTags            String[]
+  aiSaliencyScore   Float?
+  // NOVÁ POLE PRO POPISKY
+  aiDescription     String?  // popis co je na fotce
+  aiCaption         String?  // popisek pro realitní web
+}
+
+model AIResult {
+  id               String   @id @default(cuid())
+  listingId        String   @unique
+  listing          Listing  @relation(fields: [listingId], references: [id])
+  headline         String?
+  shortDesc        String?
+  longDesc         String?
+  bulletPoints     Json?
+  seoTitle         String?
+  seoDescription   String?
+  instagramCaption String?
+  fbPost           String?
+  priceSuggestion  Int?
+  priceReasoning   String?
+  targetAudience   String?
+  bestTimeToPost   String?
+  recommendations  Json[]
+  featuredSuggestionId String?
+}
+
+model CRMLead {
+  id        String      @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  listingId String?
+  listing   Listing?    @relation(fields: [listingId], references: [id])
+  agentId   String?
+  agent     Agent?      @relation(fields: [agentId], references: [id])
+  source    LeadSource
+  status    LeadStatus  @default(NEW)
+  notes     String?
+  logs      CRMLog[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model CRMLog {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      CRMLead  @relation(fields: [leadId], references: [id])
+  type      LogType
+  content   String
+  timestamp DateTime @default(now())
+}
+
+model ExportJob {
+  id         String         @id @default(cuid())
+  listingId  String
+  listing    Listing        @relation(fields: [listingId], references: [id])
+  platform   ExportPlatform
+  status     ExportStatus   @default(PREPARING)
+  payload    Json?
+  externalId String?
+  publishedAt DateTime?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}

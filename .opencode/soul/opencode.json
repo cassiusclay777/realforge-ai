@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "scheduledJobs": [
+    {
+      "name": "soul-heartbeat",
+      "command": "soul-heartbeat",
+      "agent": "soul",
+      "schedule": "0 */12 * * *",
+      "timeout": 120,
+      "workdir": "."
+    }
+  ]
+}

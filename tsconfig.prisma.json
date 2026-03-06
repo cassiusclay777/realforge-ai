@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "commonjs",
+        "moduleResolution": "node", //   z   "bundler" na "node"
+        "skipLibCheck": true,
+        "noEmit": true //    pro    "emit"  "tsc"   "prisma"   "tsconfig.prisma.json"   "noEmit"  true
+    },
+    "include": [
+        "lib/prisma.ts",
+        "prisma/**/*"
+    ]
+}

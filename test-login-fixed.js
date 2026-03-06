@@ -1,0 +1,49 @@
+async function testLogin() {
+  try {
+    console.log('Testing login with CSRF token...');
+    
+    // First, get CSRF token
+    const csrfResponse = await fetch('http://localhost:3001/api/auth/csrf');
+    const csrfData = await csrfResponse.json();
+    console.log('CSRF token:', csrfData.csrfToken);
+    
+    // Try to login with demo credentials and CSRF token
+    const formData = new URLSearchParams();
+    formData.append('csrfToken', csrfData.csrfToken);
+    formData.append('email', 'demo@realforge.ai');
+    formData.append('password', 'demo');
+    formData.append('redirect', 'false');
+    formData.append('json', 'true');
+    
+    const loginResponse = await fetch('http://localhost:3001/api/auth/callback/credentials', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData,
+    });
+    
+    console.log('Login status:', loginResponse.status);
+    console.log('Login headers:', Object.fromEntries(loginResponse.headers.entries()));
+    
+    try {
+      const result = await loginResponse.json();
+      console.log('Login response JSON:', JSON.stringify(result, null, 2));
+    } catch (jsonError) {
+      const text = await loginResponse.text();
+      console.log('Login response text (first 500 chars):', text.substring(0, 500));
+    }
+    
+    if (loginResponse.ok) {
+      console.log('✅ Login successful!');
+    } else {
+      console.log('❌ Login failed');
+    }
+    
+  } catch (error) {
+    console.error('❌ Error testing login:', error.message);
+    console.error('Stack:', error.stack);
+  }
+}
+
+testLogin();

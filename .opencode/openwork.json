@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "workspace": {
+    "name": "REALFORGE-AI",
+    "createdAt": 1772516579032,
+    "preset": "minimal"
+  },
+  "authorizedRoots": [
+    "C:\\Users\\Patri\\REALFORGE-AI"
+  ]
+}

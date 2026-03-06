@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REALFORGE AI - Demonstrace pro maminku</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+        
+        .column {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .column.poski {
+            border-top: 5px solid #ff6b6b;
+        }
+        
+        .column.realforge {
+            border-top: 5px solid #4ecdc4;
+        }
+        
+        .column h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .time-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        .poski .time-badge {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .realforge .time-badge {
+            background: #4ecdc4;
+            color: white;
+        }
+        
+        .step {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .step h4 {
+            display: inline-block;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .step p {
+            color: #666;
+            margin-left: 40px;
+        }
+        
+        .features {
+            padding: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .features h3 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #1e3c72;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #1e3c72;
+        }
+        
+        .demo-links {
+            padding: 40px;
+            text-align: center;
+            background: white;
+        }
+        
+        .demo-links h3 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #1e3c72;
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-link {
+            display: block;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .demo-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .stat {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            background: #1e3c72;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>REALFORGE AI</h1>
+            <h2>Ukážu mamince, že její práci v Poski REAL můžeme z 60 minut udělat za 5 minut</h2>
+        </div>
+        
+        <div class="comparison">
+            <div class="column poski">
+                <h3>Poski REAL <span class="time-badge">60 minut</span></h3>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <h4>Ruční příprava fotografií</h4>
+                    <p>Stahování, třídění, úprava velikosti a formátu 20+ fotografií</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <h4>Psaní popisů</h4>
+                    <p>Ruční psaní titulků, popisů, SEO textů a bullet points</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <h4>Kategorizace fotografií</h4>
+                    <p>Ruční třídění na kuchyň, obývák, koupelnu, ložnici, atd.</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <h4>Příprava pro portály</h4>
+                    <p>Ruční kopírování dat na Sreality, Bezrealitky, Facebook</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <h4>Kontrola a opravy</h4>
+                    <p>Kontrola chyb, úprava formátování, opakované úpravy</p>
+                </div>
+            </div>
+            
+            <div class="column realforge">
+                <h3>REALFORGE AI <span class="time-badge">5 minut</span></h3>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <h4>Nahrání ZIP souboru</h4>
+                    <p>Jedním kliknutím nahrajete celou složku s fotografiemi</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <h4>Automatické AI zpracování</h4>
+                    <p>AI analyzuje fotky, generuje popisy a optimalizuje obsah</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <h4>Inteligentní kategorizace</h4>
+                    <p>AI automaticky rozezná typ místnosti a přiřadí kategorii</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <h4>Jednoklikový export</h4>
+                    <p>Export na všechny portály najednou s AI optimalizovaným obsahem</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <h4>Hotové za 5 minut</h4>
+                    <p>Kompletní profesionální prezentace nemovitosti připravená k publikaci</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h3>Co REALFORGE AI umí</h3>
+            <div class="feature-grid">
+                <div class="feature">
+                    <div class="feature-icon">🤖</div>
+                    <h4>AI Generovaný Obsah</h4>
+                    <p>Automatické generování titulků, popisů, SEO textů a bullet points</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📸</div>
+                    <h4>Inteligentní Analýza Fotek</h4>
+                    <p>AI rozpozná typ místnosti, vybere hlavní fotku a optimalizuje galerii</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <h4>Jednoklikový Export</h4>
+                    <p>Publikace na Sreality, Bezrealitky, Facebook a další platformy</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">💾</div>
+                    <h4>Stahování ZIP</h4>
+                    <p>Kompletní balíček s fotkami a AI daty připravený k odeslání klientům</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h4>Preview Webstránka</h4>
+                    <p>Profesionální preview stránka s AI generovaným obsahem</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📈</div>
+                    <h4>AI Doporučení Cen</h4>
+                    <p>Inteligentní návrhy cen na základě tržních dat a lokalit</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-links">
+            <h3>Živá demonstrace</h3>
+            <p>Klikněte na odkazy a uvidíte aplikaci v akci:</p>
+            
+            <div class="links-grid">
+                <a href="http://localhost:3001/listings/0c52f531-e1dc-4905-a804-2e68b4c2f17c" class="demo-link" target="_blank">
+                    📍 Detail nemovitosti
+                </a>
+                
+                <a href="http://localhost:3001/preview/0c52f531-e1dc-4905-a804-2e68b4c2f17c" class="demo-link" target="_blank">
+                    👁️ Preview stránka
+                </a>
+                
+                <a href="http://localhost:3001/upload" class="demo-link" target="_blank">
+                    ⬆️ Nahrát novou nemovitost
+                </a>
+                
+                <a href="http://localhost:3001/listings" class="demo-link" target="_blank">
+                    🏠 Seznam všech nemovitostí
+                </a>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">92%</div>
+                    <div class="stat-label">Úspora času</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-number">26</div>
+                    <div class="stat-label">Fotek zpracovaných AI</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Minut místo 60</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-number">37</div>
+                    <div class="stat-label">Nemovitostí v databázi</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>REALFORGE AI</strong> - Production-ready real estate platform for agents</p>
+            <p>Built with Next.js 14+ • Prisma • PostgreSQL • Tailwind • ML Pipeline</p>
+            <p>© 2026 - Built for agents, tuned for mom</p>
+        </div>
+    </div>
+    
+    <script>
+        // Přidáme interaktivitu pro lepší UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animace statistik
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const finalValue = parseInt(stat.textContent);
+                let current = 0;
+                const increment = finalValue / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= finalValue) {
+                        current = finalValue;
+                        clearInterval(timer);
+                    }
+                    stat.textContent = Math.round(current);
+                }, 30);
+            });
+            
+            // Přidání hover efektů pro kroky
+            const steps = document.querySelectorAll('.step');
+            steps.forEach(step => {
+                step.addEventListener('mouseenter', () => {
+                    step.style.transform = 'translateY(-5px)';
+                    step.style.boxShadow = '0 15px 30px rgba(0,0,0,0.1)';
+                });
+                
+                step.addEventListener('mouseleave', () => {
+                    step.style.transform = 'translateY(0)';
+                    step.style.boxShadow = '0 5px 15px rgba(0,0,0,0.05)';
+                });
+            });
+            
+            // Kontrola, jestli aplikace běží
+            fetch('http://localhost:3001/api/process/zip/0c52f531-e1dc-4905-a804-2e68b4c2f17c')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('✅ Aplikace běží správně:', data.listing.title);
+                })
+                .catch(error => {
+                    console.warn('⚠️ Aplikace není dostupná, spusťte ji příkazem: npm run dev');
+                });
+        });
+    </script>
+</body>
+</html>

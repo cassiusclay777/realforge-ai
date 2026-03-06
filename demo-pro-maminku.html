@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REALFORGE AI - Demonstrace pro maminku</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+        
+        .column {
+            padding: 40px;
+            position: relative;
+        }
+        
+        .column-left {
+            background: #f8f9fa;
+            border-right: 2px dashed #dee2e6;
+        }
+        
+        .column-right {
+            background: #fff;
+        }
+        
+        .column-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .column-left .column-title {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .column-right .column-title {
+            color: #28a745;
+            border-color: #28a745;
+        }
+        
+        .time-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .time-badge.green {
+            background: #51cf66;
+        }
+        
+        .task-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .task-list li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .task-list li:hover {
+            transform: translateX(5px);
+        }
+        
+        .task-list li i {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+        }
+        
+        .task-list li.red i {
+            background: #dc3545;
+        }
+        
+        .task-list li.green i {
+            background: #28a745;
+        }
+        
+        .demo-section {
+            background: #e9ecef;
+            padding: 40px;
+            border-top: 2px solid #dee2e6;
+        }
+        
+        .demo-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e3c72;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .demo-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #1e3c72;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .demo-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .demo-link {
+            display: inline-block;
+            background: #1e3c72;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .demo-link:hover {
+            background: #2a5298;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            background: #1e3c72;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        .highlight {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .column-left {
+                border-right: none;
+                border-bottom: 2px dashed #dee2e6;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>REALFORGE AI</h1>
+            <h2>Ukázka pro maminku - co dokážeme za 5 minut vs. 30-60 minut v Poski REAL</h2>
+        </div>
+        
+        <div class="comparison">
+            <div class="column column-left">
+                <div class="time-badge">30-60 minut</div>
+                <h2 class="column-title">
+                    <i class="fas fa-clock"></i>
+                    Poski REAL - Manuální práce
+                </h2>
+                
+                <ul class="task-list">
+                    <li class="red">
+                        <i class="fas fa-upload"></i>
+                        <div>
+                            <strong>Ruční nahrávání fotek</strong>
+                            <p>Jedna po druhé, vybírání z počítače</p>
+                        </div>
+                    </li>
+                    <li class="red">
+                        <i class="fas fa-sort"></i>
+                        <div>
+                            <strong>Manuální třídění a kategorizace</strong>
+                            <p>Rozhodování, která fotka je obývák, kuchyň, atd.</p>
+                        </div>
+                    </li>
+                    <li class="red">
+                        <i class="fas fa-edit"></i>
+                        <div>
+                            <strong>Psaní popisů od nuly</strong>
+                            <p>Vymýšlení textů, SEO, výhod nemovitosti</p>
+                        </div>
+                    </li>
+                    <li class="red">
+                        <i class="fas fa-tag"></i>
+                        <div>
+                            <strong>Ruční tagování a klíčová slova</strong>
+                            <p>Přidávání tagů pro vyhledávání</p>
+                        </div>
+                    </li>
+                    <li class="red">
+                        <i class="fas fa-share-alt"></i>
+                        <div>
+                            <strong>Kopírování dat na různé platformy</strong>
+                            <p>Stejná data zadávat na Sreality, Bezrealitky, atd.</p>
+                        </div>
+                    </li>
+                    <li class="red">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <strong>Analýza trhu a cenového odhadu</strong>
+                            <p>Hledání podobných nemovitostí pro cenový odhad</p>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div style="background: #ffeaea; padding: 20px; border-radius: 10px; margin-top: 30px;">
+                    <h3 style="color: #dc3545; margin-bottom: 10px;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Problémy manuální práce:
+                    </h3>
+                    <ul style="color: #666; padding-left: 20px;">
+                        <li>Časově náročné (30-60 minut na jednu nemovitost)</li>
+                        <li>Nudné a opakující se úkoly</li>
+                        <li>Chyby z nepozornosti</li>
+                        <li>Nekonzistentní kvalita popisů</li>
+                        <li>Žádná AI optimalizace</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="column column-right">
+                <div class="time-badge green">5 minut</div>
+                <h2 class="column-title">
+                    <i class="fas fa-robot"></i>
+                    REALFORGE AI - Automatizace
+                </h2>
+                
+                <ul class="task-list">
+                    <li class="green">
+                        <i class="fas fa-file-archive"></i>
+                        <div>
+                            <strong>Nahrání ZIP souboru</strong>
+                            <p>Všechny fotky najednou v jednom ZIPu</p>
+                        </div>
+                    </li>
+                    <li class="green">
+                        <i class="fas fa-brain"></i>
+                        <div>
+                            <strong>Automatická AI kategorizace</strong>
+                            <p>AI rozpozná obývák, kuchyň, ložnici, atd.</p>
+                        </div>
+                    </li>
+                    <li class="green">
+                        <i class="fas fa-magic"></i>
+                        <div>
+                            <strong>AI generování popisů</strong>
+                            <p>Profesionální texty, SEO optimalizované</p>
+                        </div>
+                    </li>
+                    <li class="green">
+                        <i class="fas fa-tags"></i>
+                        <div>
+                            <strong>Automatické tagování</strong>
+                            <p>AI přidá relevantní tagy a klíčová slova</p>
+                        </div>
+                    </li>
+                    <li class="green">
+                        <i class="fas fa-rocket"></i>
+                        <div>
+                            <strong>Okamžitý export na platformy</strong>
+                            <p>Jedním kliknutím na Sreality, Facebook, atd.</p>
+                        </div>
+                    </li>
+                    <li class="green">
+                        <i class="fas fa-calculator"></i>
+                        <div>
+                            <strong>AI cenový odhad</strong>
+                            <p>Analýza trhu a doporučení ceny</p>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin-top: 30px;">
+                    <h3 style="color: #28a745; margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i>
+                        Výhody AI automatizace:
+                    </h3>
+                    <ul style="color: #666; padding-left: 20px;">
+                        <li><strong>Rychlost:</strong> 5 minut vs. 60 minut</li>
+                        <li><strong>Konzistence:</strong> Vždy profesionální kvalita</li>
+                        <li><strong>SEO optimalizace:</strong> Lepší pozice ve vyhledávání</li>
+                        <li><strong>Méně chyb:</strong> AI neudělá překlepy</li>
+                        <li><strong>Škálovatelnost:</strong> 10 nemovitostí za hodinu</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Živá demonstrace REALFORGE AI</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3><i class="fas fa-home"></i> Ukázková nemovitost</h3>
+                    <p>Dům 120m² v Brně, který byl zpracován AI za 5 minut. Obsahuje 26 fotografií automaticky kategorizovaných a AI generované popisy.</p>
+                    <a href="http://localhost:3001/listings/0c52f531-e1dc-4905-a804-2e68b4c2f17c" class="demo-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Otevřít detail nemovitosti
+                    </a>
+                </div>
+                
+                <div class="demo-card">
+                    <h3><i class="fas fa-upload"></i> Nahrávání nové nemovitosti</h3>
+                    <p>Vyzkoušejte si nahrání ZIP souboru s fotografiemi. AI vše automaticky zpracuje během několika minut.</p>
+                    <a href="http://localhost:3001/upload" class="demo-link" target="_blank">
+                        <i class="fas fa-cloud-upload-alt"></i> Otevřít upload stránku
+                    </a>
+                </div>
+                
+                <div class="demo-card">
+                    <h3><i class="fas fa-list"></i> Přehled všech nemovitostí</h3>
+                    <p>Prohlédněte si všechny nemovitosti, které byly zpracovány pomocí AI. Celkem 37 nemovitostí v databázi.</p>
+                    <a href="http://localhost:3001/listings" class="demo-link" target="_blank">
+                        <i class="fas fa-th-list"></i> Otevřít seznam nemovitostí
+                    </a>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">37</div>
+                    <div class="stat-label">Nemovitostí v DB</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5 min</div>
+                    <div class="stat-label">Čas na zpracování</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">26</div>
+                    <div class="stat-label">Fotek na nemovitost</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">92%</div>
+                    <div class="stat-label">Úspora času</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <h3 style="color: #1e3c72; margin-bottom: 20px;">
+                    <i class="fas fa-calculator"></i>
+                    Ekonomická výhoda
+                </h3>
+                <div style="background: white; padding: 25px; border-radius: 15px; display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto;">
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">
+                        <strong>Maminka v Poski REAL:</strong> 10 nemovitostí = <span style="color: #dc3545; font-weight: bold;">8-10 hodin práce</span>
+                    </p>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">
+                        <strong>REALFORGE AI:</strong> 10 nemovitostí = <span style="color: #28a745; font-weight: bold;">50 minut práce</span>
+                    </p>
+                    <p style="font-size: 1.2rem; margin-bottom: 20px;">
+                        <strong>Úspora času:</strong> <span class="highlight">7-9 hodin týdně!</span>
+                    </p>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <p style="color: #666; font-size: 1rem;">
+                            <i class="fas fa-lightbulb"></i> To znamená, že maminka může zpracovat <strong>4x více nemovitostí</strong> za stejný čas, 
+                            nebo mít <strong>o 7 hodin více volného času</strong> každý týden!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <h3 style="margin-bottom: 20px; font-size: 1.5rem;">
+                <i class="fas fa-rocket"></i> REALFORGE AI - Budoucnost realitního marketingu
+            </h3>
+            <p>Ukázka vytvořena 16. 2. 2026 | Aplikace běží na portu 3001</p>
+            <p style="margin-top: 15px;">
+                <strong>Stav projektu:</strong> MVP funkční | <strong>AI integrace:</strong> Připravena | <strong>Úspora času:</strong> 92%
+            </p>
+            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
+                Maminko, tohle je budoucnost realitního marketingu. Místo nudné manuální práce necháš AI udělat vše za tebe!
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Jednoduchá animace pro statistiky
+        document.addEventListener('DOMContentLoaded', function() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            statNumbers.forEach(stat => {
+                const finalValue = stat.textContent;
+                stat.textContent = '0';
+                
+                let current = 0;
+                const increment = finalValue.includes('%') ? 1 : parseInt(finalValue) / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= parseInt(finalValue)) {
+                        stat.textContent = finalValue;
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current) + (finalValue.includes('%') ? '%' : '');
+                    }
+                }, 30);
+            });
+            
+            // Přidání interaktivity pro demo karty
+            const demoCards = document.querySelectorAll('.demo-card');
+            demoCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.demo-link')) {
+                        const link = this.querySelector('.demo-link');
+                        if (link) {
+                            window.open(link.href, '_blank');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

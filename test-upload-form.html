@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Upload Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { padding: 8px; width: 300px; }
+        button { padding: 10px 20px; background: #0070f3; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0051bb; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>Test Upload Form</h1>
+    <p>Testovací formulář pro ověření upload endpointu</p>
+    
+    <form id="uploadForm">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" value="Test Listing" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" value="Test Address 123" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="type">Type:</label>
+            <select id="type" name="type" required>
+                <option value="BYT">BYT (Apartment)</option>
+                <option value="DŮM">DŮM (House)</option>
+                <option value="POZEMEK" selected>POZEMEK (Land)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" value="2500000" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="zipFile">ZIP File:</label>
+            <input type="file" id="zipFile" name="zipFile" accept=".zip,.7z,.rar,.ZIP,.RAR" required>
+            <small>Povolené formáty: .zip, .7z, .rar</small>
+        </div>
+        
+        <button type="submit">Upload</button>
+    </form>
+    
+    <div id="result" class="result" style="display: none;"></div>
+    
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            // Přidáme aktuální soubor
+            const fileInput = document.getElementById('zipFile');
+            if (fileInput.files.length === 0) {
+                showResult('❌ Please select a file', 'error');
+                return;
+            }
+            
+            console.log('FormData contents:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}:`, value instanceof File ? `${value.name} (${value.size} bytes)` : value);
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/upload/zip', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ Upload successful!<br>Listing ID: ${result.listingId}<br>ZIP URL: ${result.zipUrl}`, 'success');
+                    console.log('Full response:', result);
+                    
+                    // Automaticky spustit processing
+                    setTimeout(async () => {
+                        try {
+                            const queueRes = await fetch('http://localhost:3001/api/queue/process-zip', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 
+                                    listingId: result.listingId, 
+                                    zipUrl: result.zipUrl 
+                                })
+                            });
+                            
+                            const queueResult = await queueRes.json();
+                            if (queueRes.ok) {
+                                showResult(`✅ Job enqueued! Job ID: ${queueResult.jobId}<br>Worker will process the listing.`, 'success');
+                            } else {
+                                showResult(`❌ Job enqueue failed: ${JSON.stringify(queueResult)}`, 'error');
+                            }
+                        } catch (error) {
+                            showResult(`❌ Job enqueue error: ${error.message}`, 'error');
+                        }
+                    }, 1000);
+                    
+                } else {
+                    showResult(`❌ Upload failed: ${result.error}<br>Details: ${result.details || 'No details'}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        });
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

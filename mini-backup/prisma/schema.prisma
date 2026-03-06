@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("AGENT")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  agent         Agent?
+  listings      Listing[]
+  sessions      Session[]
+  crmLeads      CRMLead[]  // Added relation to CRMLead
+  analyticsEvents AnalyticsEvent[] // Added relation to AnalyticsEvent
+  integrations  Integration[] // Added relation to Integration
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Agent {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String?  @unique
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+// New model for AI-processed photos
+model ProcessedPhotos {
+  id          String   @id @default(cuid())
+  listingId   String?
+  listing     Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  categories  Json     // JSON array of categories
+  outputZipUrl String  // URL to the processed ZIP file
+  comment     String?  // User comment for processing
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// CRM Models
+model CRMLead {
+  id          String   @id @default(cuid())
+  name        String
+  email       String?
+  phone       String?
+  source      String   @default("WEBSITE") // WEBSITE, REFERRAL, SOCIAL, DIRECT
+  status      String   @default("NEW") // NEW, CONTACTED, QUALIFIED, NEGOTIATION, CLOSED
+  budget      Int?
+  preferences Json?    // JSON with property preferences
+  notes       String?
+  assignedToId String?
+  assignedTo  User?    @relation(fields: [assignedToId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  activities  CRMActivity[]
+  deals       Deal[]
+}
+
+model CRMActivity {
+  id          String   @id @default(cuid())
+  leadId      String
+  lead        CRMLead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type        String   // CALL, EMAIL, MEETING, VIEWING, NOTE
+  description String
+  outcome     String?  // POSITIVE, NEGATIVE, FOLLOW_UP
+  scheduledAt DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Deal {
+  id          String   @id @default(cuid())
+  leadId      String
+  lead        CRMLead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  listingId   String?
+  listing     Listing? @relation(fields: [listingId], references: [id])
+  status      String   @default("NEGOTIATION") // NEGOTIATION, CONTRACT, CLOSED, LOST
+  price       Int
+  commission  Float    @default(2.5) // Commission percentage
+  notes       String?
+  documents   Json?    // JSON array of document URLs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  checklist   DealChecklist[]
+}
+
+model DealChecklist {
+  id          String   @id @default(cuid())
+  dealId      String
+  deal        Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  task        String
+  completed   Boolean  @default(false)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Analytics Models
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  type        String   // PAGE_VIEW, LISTING_VIEW, LEAD_FORM, DOWNLOAD
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  listingId   String?
+  listing     Listing? @relation(fields: [listingId], references: [id])
+  metadata    Json?    // Additional event data
+  createdAt   DateTime @default(now())
+}
+
+model AITraining {
+  id          String   @id @default(cuid())
+  model       String   // PRICE_PREDICTION, IMAGE_ANALYSIS, TEXT_GENERATION
+  version     String
+  accuracy    Float?
+  trainedAt   DateTime @default(now())
+  metadata    Json?    // Training parameters and results
+}
+
+// Integration Models
+model Integration {
+  id          String   @id @default(cuid())
+  name        String   // SREALITY, BEZREALITKY, MAILCHIMP, SNOVIO
+  apiKey      String?
+  config      Json?    // Integration configuration
+  enabled     Boolean  @default(true)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Update Listing model with more fields
+model Listing {
+  id          String   @id @default(cuid())
+  title       String
+  address     String
+  type        String
+  price       Int
+  area        Int?
+  rooms       Int?
+  status      String   @default("NEW")
+  aiResult    String?
+  description String?
+  features    Json?    // JSON array of features
+  images      Json?    // JSON array of image URLs
+  views       Int      @default(0)
+  inquiries   Int      @default(0)
+  aiPriceSuggestion Int? // AI suggested price
+  aiScore     Float?   // AI quality score 0-100
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  processedPhotos ProcessedPhotos[] // Added relation to ProcessedPhotos
+  deals       Deal[]   // Added relation to deals
+  analyticsEvents AnalyticsEvent[] // Added relation to AnalyticsEvent
+}

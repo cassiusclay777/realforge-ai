@@ -1,0 +1,9 @@
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (17) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+✅ BullMQ image-process-deepseek worker started
+✅ Redis connected for BullMQ worker
+
+❌ Redis není dostupný na redis://localhost:6379
+   Spusť Redis: docker-compose up -d redis
+   Nebo spusť jen Next.js: npm run dev:next
+

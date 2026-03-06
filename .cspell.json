@@ -1,0 +1,20 @@
+{
+  "version": "0.2",
+  "ignorePaths": [
+    "**/*.prisma",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.next/**",
+    "package-lock.json",
+    "yarn.lock"
+  ],
+  "words": [
+    "cuid",
+    "SREALITY",
+    "BEZREALITKY",
+    "prisma",
+    "Prisma",
+    "nextjs",
+    "typescript"
+  ]
+}

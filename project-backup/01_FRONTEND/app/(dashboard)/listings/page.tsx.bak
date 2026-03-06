@@ -1,0 +1,256 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Image as ImageIcon, ArrowLeft, Download, Share2 } from "lucide-react";
+import Link from "next/link";
+
+interface ListingMedia {
+  id: string;
+  url: string;
+  thumbnailUrl: string | null;
+  category: string;
+  isFeatured: boolean;
+}
+
+interface AIResult {
+  headline: string | null;
+  longDesc: string | null;
+  priceSuggestion: number | null;
+  targetAudience: string | null;
+}
+
+interface Listing {
+  id: string;
+  title: string;
+  address: string;
+  type: string;
+  price: number;
+  area: number | null;
+  status: string;
+  media: ListingMedia[];
+  aiResults: AIResult | null;
+}
+
+export default function ListingDetailPage() {
+  const params = useParams();
+  const [listing, setListing] = useState<Listing | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  useEffect(() => {
+    fetchListing();
+  }, [params.id]);
+
+  const fetchListing = async () => {
+    try {
+      const response = await fetch(`/api/listings/${params.id}`);
+      const data = await response.json();
+      setListing(data);
+    } catch (error) {
+      console.error("Chyba při načítání detailu:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "NOVA": return <Badge className="bg-blue-500">Nový</Badge>;
+      case "AKTIVNI": return <Badge className="bg-green-500">Aktivní</Badge>;
+      case "REZERVACE": return <Badge className="bg-yellow-500">Rezervace</Badge>;
+      case "PRODANO": return <Badge className="bg-purple-500">Prodáno</Badge>;
+      default: return <Badge>{status}</Badge>;
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("cs-CZ", {
+      style: "currency",
+      currency: "CZK",
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const categories = listing?.media 
+    ? [...new Set(listing.media.map(m => m.category))]
+    : [];
+
+  const filteredMedia = selectedCategory === "all"
+    ? listing?.media
+    : listing?.media.filter(m => m.category === selectedCategory);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!listing) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-2xl font-bold">Listing nenalezen</h1>
+        <Link href="/listings" className="text-blue-600 mt-4 inline-block">
+          Zpět na přehled
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      {/* Hlavička */}
+      <div className="mb-6">
+        <Link href="/listings" className="text-blue-600 hover:text-blue-800 flex items-center gap-2 mb-4">
+          <ArrowLeft className="h-4 w-4" />
+          Zpět na přehled
+        </Link>
+        
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold">{listing.title}</h1>
+            <p className="text-muted-foreground mt-2">{listing.address}</p>
+          </div>
+          {getStatusBadge(listing.status)}
+        </div>
+      </div>
+
+      {/* Galerie fotek */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ImageIcon className="h-5 w-5" />
+            Fotografie nemovitosti
+            <span className="text-sm font-normal text-muted-foreground ml-2">
+              ({listing.media?.length || 0} fotek)
+            </span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Kategorie */}
+          {categories.length > 0 && (
+            <div className="flex gap-2 mb-6 flex-wrap">
+              <Button
+                variant={selectedCategory === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory("all")}
+              >
+                Všechny
+              </Button>
+              {categories.map(cat => (
+                <Button
+                  key={cat}
+                  variant={selectedCategory === cat ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(cat)}
+                >
+                  {cat}
+                </Button>
+              ))}
+            </div>
+          )}
+
+          {/* Grid fotek */}
+          {filteredMedia && filteredMedia.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {filteredMedia.map((media) => (
+                <div key={media.id} className="relative group">
+                  <img
+                    src={media.url}
+                    alt={media.category}
+                    className="w-full h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
+                  />
+                  {media.isFeatured && (
+                    <Badge className="absolute top-2 right-2 bg-yellow-500">
+                      Hlavní
+                    </Badge>
+                  )}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+                    <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 rounded-b-lg">
+                    {media.category}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+              <ImageIcon className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+              <p className="text-muted-foreground">Zatím žádné fotografie</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Nahrávka probíhá nebo worker ještě nedokončil zpracování
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Informace o nemovitosti */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Popis nemovitosti</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {listing.aiResults?.longDesc ? (
+              <p className="whitespace-pre-line">{listing.aiResults.longDesc}</p>
+            ) : (
+              <p className="text-muted-foreground">
+                AI zatím negenerovala popis. Počkejte prosím na dokončení zpracování.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Parametry</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Cena:</span>
+              <span className="font-bold">{formatPrice(listing.price)}</span>
+            </div>
+            {listing.area && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Plocha:</span>
+                <span>{listing.area} m²</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Typ:</span>
+              <span>{listing.type}</span>
+            </div>
+            {listing.aiResults?.priceSuggestion && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">AI odhad ceny:</span>
+                <span className="text-green-600">
+                  {formatPrice(listing.aiResults.priceSuggestion)}
+                </span>
+              </div>
+            )}
+            {listing.aiResults?.targetAudience && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Cílová skupina:</span>
+                <span>{listing.aiResults.targetAudience}</span>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

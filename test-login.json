@@ -1,0 +1,6 @@
+{
+  "email": "testuser@example.com",
+  "password": "test123",
+  "redirect": false,
+  "callbackUrl": "http://localhost:3000/dashboard"
+}

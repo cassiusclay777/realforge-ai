@@ -1,0 +1,28 @@
+{
+  "productName": "realforge-ai",
+  "version": "0.1.0",
+  "identifier": "com.realforge.ai",
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devUrl": "http://localhost:3001",
+    "frontendDist": "../out"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "title": "REALFORGE-AI",
+        "width": 1200,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {},
+  "plugins": {}
+}

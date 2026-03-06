@@ -1,0 +1,1 @@
+SELECT id, title, status FROM "Listing" WHERE id = '66f1c12f-2a39-4578-80a3-0e3d0b0e75ef';
