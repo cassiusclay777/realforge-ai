@@ -4,7 +4,10 @@ import { existsSync } from 'fs';
 import path from 'path';
 import AdmZip from 'adm-zip';
 import { v4 as uuidv4 } from 'uuid';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { ensureListingOwnership } from '@/lib/api-listing-auth';
 import { analyzeImageForZip } from '@/lib/deepseek-vision';
 
 // Podporované image extensions
@@ -154,11 +157,21 @@ async function processZipFile(
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Neautorizováno' }, { status: 401 });
+    }
+
     const formData = await request.formData();
     
     const zipFile = formData.get('zipFile') as File;
     const comment = formData.get('comment') as string;
     const listingId = formData.get('listingId') as string;
+
+    if (listingId) {
+      const auth = await ensureListingOwnership(listingId, session.user.id);
+      if ('error' in auth) return auth.error;
+    }
 
     if (!zipFile) {
       return NextResponse.json(
@@ -208,6 +221,11 @@ export async function POST(request: NextRequest) {
 
 // GET endpoint pro stažení zpracovaného ZIPu
 export async function GET(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Neautorizováno' }, { status: 401 });
+  }
+
   const searchParams = request.nextUrl.searchParams;
   const fileUrl = searchParams.get('file');
 
@@ -219,7 +237,22 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const filePath = path.join(process.cwd(), 'public', fileUrl);
+    const normalizedFile = path
+      .normalize(fileUrl)
+      .replace(/^[\\/]+/, '')
+      .replace(/^(\.\.(\/|\\|$))+/, '');
+    const relativeFile = normalizedFile.startsWith('processed/')
+      ? normalizedFile
+      : `processed/${normalizedFile}`;
+    const baseDir = path.resolve(process.cwd(), 'public', 'processed');
+    const filePath = path.resolve(path.join(process.cwd(), 'public', relativeFile));
+
+    if (!filePath.startsWith(baseDir + path.sep)) {
+      return NextResponse.json(
+        { error: 'Invalid file path' },
+        { status: 400 }
+      );
+    }
     
     if (!existsSync(filePath)) {
       return NextResponse.json(

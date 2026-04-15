@@ -93,7 +93,7 @@ export const authOptions: NextAuthOptions = {
           GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            allowDangerousEmailAccountLinking: true,
+            allowDangerousEmailAccountLinking: false,
           }),
         ]
       : []),
@@ -118,11 +118,14 @@ export const authOptions: NextAuthOptions = {
       return true
     },
     async redirect({ url, baseUrl }) {
-      // Redirect to dashboard after login
-      if (url.startsWith(baseUrl)) {
-        return `${baseUrl}/dashboard`
+      // Allow only same-origin or relative redirects.
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`
       }
-      return url
+      if (new URL(url).origin === baseUrl) {
+        return url
+      }
+      return `${baseUrl}/dashboard`
     },
   },
   events: {

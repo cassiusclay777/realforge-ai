@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useUpload } from "@/hooks/use-upload";
 import { AlertCircle, CheckCircle, Image, Upload, Zap, Brain, Download } from "lucide-react";
 import { useState, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 
 // ProgressStep komponenta
 const ProgressStep = ({ isActive, text }: { isActive: boolean; text: string }) => (
@@ -90,6 +91,9 @@ const InfoPanel = () => (
 );
 
 export default function UploadPage() {
+  const searchParams = useSearchParams();
+  const listingId = searchParams.get("listingId");
+  const isAppendMode = Boolean(listingId);
   const [uploadState, setUploadState] = useState<"idle" | "uploading" | "processing">("idle");
   const [progress, setProgress] = useState(0);
   const [batchCount, setBatchCount] = useState<number | null>(null);
@@ -187,14 +191,21 @@ export default function UploadPage() {
     }
 
     const isBatch = selectedFiles.length > 1;
-    if (!isBatch && (!formData.title || !formData.address || !formData.price)) {
+    if (isAppendMode && isBatch) {
+      alert("Při doplnění médií do existujícího listingu lze nahrát pouze jeden ZIP.");
+      return;
+    }
+
+    if (!isAppendMode && !isBatch && (!formData.title || !formData.address || !formData.price)) {
       alert("Prosím vyplňte všechny povinné pole (Název, Adresa, Cena)");
       return;
     }
 
     const submitFormData = new FormData();
     for (const f of selectedFiles) submitFormData.append("zipFile", f);
-    if (!isBatch) {
+    if (isAppendMode && listingId) {
+      submitFormData.append("listingId", listingId);
+    } else if (!isBatch) {
       submitFormData.append("title", formData.title);
       submitFormData.append("address", formData.address);
       submitFormData.append("type", formData.type);
@@ -213,7 +224,7 @@ export default function UploadPage() {
 
   const isFormValid =
     selectedFiles.length > 0 &&
-    (selectedFiles.length > 1 || (formData.title && formData.address && formData.price));
+    (isAppendMode || selectedFiles.length > 1 || (formData.title && formData.address && formData.price));
 
   const renderUploadForm = () => (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -234,6 +245,8 @@ export default function UploadPage() {
           accept=".zip,.rar,.7z,.ZIP,.RAR"
           className="hidden"
           id="zipFile"
+          aria-label="Vyberte ZIP soubor"
+          title="Vyberte ZIP soubor"
           ref={fileInputRef}
           multiple
           onChange={handleFileChange}
@@ -292,6 +305,14 @@ export default function UploadPage() {
         </>
       ) : (
         <>
+          {isAppendMode && (
+            <div className="rounded-lg border border-primary/30 bg-primary/5 p-4">
+              <p className="font-medium text-foreground">Doplňujete média k existujícímu listingu</p>
+              <p className="text-sm text-muted-foreground">
+                Nahrajte jeden ZIP. Metadata listingu zůstanou zachována.
+              </p>
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label htmlFor="title" className="text-sm font-medium">
@@ -304,7 +325,8 @@ export default function UploadPage() {
                 onChange={handleInputChange}
                 placeholder="Byt 2+1, Praha 4, Škodovka 123"
                 className="w-full border border-input bg-background px-3 py-2 rounded-md"
-                required
+                required={!isAppendMode}
+                disabled={isAppendMode}
               />
             </div>
             <div className="space-y-2">
@@ -318,7 +340,8 @@ export default function UploadPage() {
                 onChange={handleInputChange}
                 placeholder="Škodovka 123, Praha 4"
                 className="w-full border border-input bg-background px-3 py-2 rounded-md"
-                required
+                required={!isAppendMode}
+                disabled={isAppendMode}
               />
             </div>
           </div>
@@ -334,6 +357,7 @@ export default function UploadPage() {
                 value={formData.type}
                 onChange={handleInputChange}
                 className="w-full border border-input bg-background px-3 py-2 rounded-md"
+                disabled={isAppendMode}
               >
                 <option value="BYT">Byt</option>
                 <option value="DUM">Dům</option>
@@ -352,7 +376,8 @@ export default function UploadPage() {
                 onChange={handleInputChange}
                 placeholder="5000000"
                 className="w-full border border-input bg-background px-3 py-2 rounded-md"
-                required
+                required={!isAppendMode}
+                disabled={isAppendMode}
               />
             </div>
             <div className="space-y-2">
@@ -368,6 +393,7 @@ export default function UploadPage() {
                 onChange={handleInputChange}
                 placeholder="65"
                 className="w-full border border-input bg-background px-3 py-2 rounded-md"
+                disabled={isAppendMode}
               />
             </div>
           </div>

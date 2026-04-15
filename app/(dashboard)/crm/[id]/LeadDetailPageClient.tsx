@@ -388,6 +388,8 @@ export default function LeadDetailPageClient({ leadId }: { leadId: string }) {
                       <select
                         id="edit-status"
                         name="status"
+                        aria-label="Status leadu"
+                        title="Status leadu"
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         value={editForm.status}
                         onChange={handleEditChange}
@@ -423,6 +425,8 @@ export default function LeadDetailPageClient({ leadId }: { leadId: string }) {
                       <select
                         id="edit-source"
                         name="source"
+                        aria-label="Zdroj leadu"
+                        title="Zdroj leadu"
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         value={editForm.source}
                         onChange={handleEditChange}
@@ -555,7 +559,7 @@ export default function LeadDetailPageClient({ leadId }: { leadId: string }) {
                     Historie komunikace s leadem ({lead.activitiesCount})
                   </CardDescription>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" disabled title="Akce bude dostupná v další verzi">
                   <Activity className="h-4 w-4 mr-2" />
                   Přidat aktivitu
                 </Button>
@@ -693,19 +697,19 @@ export default function LeadDetailPageClient({ leadId }: { leadId: string }) {
               <CardTitle>Rychlé akce</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start" size="sm">
+              <Button variant="outline" className="w-full justify-start" size="sm" disabled title="Akce bude dostupná v další verzi">
                 <Mail className="h-4 w-4 mr-2" />
                 Poslat email
               </Button>
-              <Button variant="outline" className="w-full justify-start" size="sm">
+              <Button variant="outline" className="w-full justify-start" size="sm" disabled title="Akce bude dostupná v další verzi">
                 <Phone className="h-4 w-4 mr-2" />
                 Zavolat
               </Button>
-              <Button variant="outline" className="w-full justify-start" size="sm">
+              <Button variant="outline" className="w-full justify-start" size="sm" disabled title="Akce bude dostupná v další verzi">
                 <Calendar className="h-4 w-4 mr-2" />
                 Naplánovat schůzku
               </Button>
-              <Button variant="outline" className="w-full justify-start" size="sm">
+              <Button variant="outline" className="w-full justify-start" size="sm" disabled title="Akce bude dostupná v další verzi">
                 <Briefcase className="h-4 w-4 mr-2" />
                 Vytvořit deal
               </Button>

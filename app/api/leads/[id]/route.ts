@@ -185,6 +185,22 @@ export async function PUT(
       assignedToId 
     } = body;
 
+    let parsedBudget = existingLead.budget;
+    if (budget !== undefined) {
+      if (budget === null || budget === "") {
+        parsedBudget = null;
+      } else {
+        const asNumber = Number.parseInt(String(budget), 10);
+        if (Number.isNaN(asNumber) || asNumber < 0) {
+          return NextResponse.json(
+            { error: "Neplatná hodnota budget" },
+            { status: 400 }
+          );
+        }
+        parsedBudget = asNumber;
+      }
+    }
+
     // Update lead
     const updatedLead = await prisma.cRMLead.update({
       where: { id: leadId },
@@ -194,7 +210,7 @@ export async function PUT(
         phone: phone ?? existingLead.phone,
         source: source ?? existingLead.source,
         status: status ?? existingLead.status,
-        budget: budget !== undefined ? parseInt(budget) : existingLead.budget,
+        budget: parsedBudget,
         preferences: preferences ?? existingLead.preferences,
         notes: notes ?? existingLead.notes,
         assignedToId: assignedToId ?? existingLead.assignedToId,

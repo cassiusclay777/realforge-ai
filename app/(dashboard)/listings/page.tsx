@@ -93,7 +93,7 @@ export default async function ListingsPage() {
             Celkem {listings.length} nemovitostí
           </p>
         </div>
-        <Link href="/listings/new">
+        <Link href="/upload">
           <Button className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Nový listing
@@ -107,7 +107,7 @@ export default async function ListingsPage() {
             <div className="text-5xl text-muted-foreground/70">🏠</div>
             <h2 className="text-xl font-semibold text-foreground">Zatím nemáte žádné inzeráty</h2>
             <p className="text-muted-foreground max-w-sm mx-auto">
-              Nahrajte ZIP s fotkami nebo vytvořte inzerát ručně a začněte s AI popisy.
+              Nahrajte ZIP s fotkami a začněte s AI popisy.
             </p>
             <div className="flex flex-wrap justify-center gap-3 pt-2">
               <Link href="/upload">
@@ -115,9 +115,6 @@ export default async function ListingsPage() {
                   <Plus className="h-4 w-4" />
                   Nahrát nový inzerát
                 </Button>
-              </Link>
-              <Link href="/listings/new">
-                <Button variant="outline">Vytvořit inzerát ručně</Button>
               </Link>
             </div>
           </CardContent>
@@ -197,7 +194,13 @@ export default async function ListingsPage() {
                       <Edit className="h-4 w-4" />
                     </Button>
                   </Link>
-                  <Button variant="outline" size="icon">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    disabled
+                    title="Mazání listingu bude dostupné v další verzi"
+                    aria-label="Mazání listingu zatím není dostupné"
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>

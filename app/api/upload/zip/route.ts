@@ -4,6 +4,7 @@ import { authOptions } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { imageProcessDeepSeekQueue } from '@/lib/queues';
 import { parsePositiveInt } from '@/lib/validation/numbers';
+import { ensureListingOwnership } from '@/lib/api-listing-auth';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
@@ -113,6 +114,7 @@ export async function POST(request: NextRequest) {
 
     // Jeden soubor – původní chování s formulářem
     const file = files[0];
+    const listingId = (formData.get('listingId') as string | null)?.trim() || null;
     const title = formData.get('title') as string;
     const address = formData.get('address') as string;
     const type = formData.get('type') as string;
@@ -120,7 +122,14 @@ export async function POST(request: NextRequest) {
     const area = formData.get('area') as string;
     const rooms = formData.get('rooms') as string;
 
-    if (!title?.trim() || !address?.trim() || !price?.trim()) {
+    if (listingId && files.length > 1) {
+      return NextResponse.json(
+        { error: 'Pro doplnění médií k existujícímu listingu lze nahrát pouze jeden ZIP' },
+        { status: 400 }
+      );
+    }
+
+    if (!listingId && (!title?.trim() || !address?.trim() || !price?.trim())) {
       return NextResponse.json(
         { error: 'U jednoho souboru jsou povinná pole: název, adresa, cena' },
         { status: 400 }
@@ -140,7 +149,7 @@ export async function POST(request: NextRequest) {
     };
     const listingType = typeMap[type?.toUpperCase() ?? ''] || 'APARTMENT';
     const parsedPrice = parsePositiveInt(price);
-    if (parsedPrice === null || parsedPrice <= 0) {
+    if (!listingId && (parsedPrice === null || parsedPrice <= 0)) {
       return NextResponse.json(
         { error: 'Neplatná cena (musí být kladné číslo)' },
         { status: 400 }
@@ -149,18 +158,51 @@ export async function POST(request: NextRequest) {
     const parsedArea = parsePositiveInt(area);
     const parsedRooms = parsePositiveInt(rooms);
 
-    const listing = await prisma.listing.create({
-      data: {
-        title: title.trim(),
-        address: address.trim(),
-        type: listingType as 'APARTMENT' | 'HOUSE' | 'LAND',
-        price: parsedPrice,
-        area: parsedArea ?? null,
-        rooms: parsedRooms ?? null,
-        status: 'NEW',
-        createdById: userId ?? undefined,
-      },
-    });
+    let listing = null as Awaited<ReturnType<typeof prisma.listing.findUnique>>;
+
+    if (listingId) {
+      const auth = await ensureListingOwnership(listingId, userId);
+      if ('error' in auth) return auth.error;
+      listing = await prisma.listing.findUnique({
+        where: { id: listingId },
+        select: {
+          id: true,
+          title: true,
+          address: true,
+          type: true,
+          price: true,
+          area: true,
+          rooms: true,
+          createdById: true,
+        },
+      });
+      if (!listing) {
+        return NextResponse.json({ error: 'Listing nenalezen' }, { status: 404 });
+      }
+    } else {
+      listing = await prisma.listing.create({
+        data: {
+          title: title.trim(),
+          address: address.trim(),
+          type: listingType as 'APARTMENT' | 'HOUSE' | 'LAND',
+          price: parsedPrice as number,
+          area: parsedArea ?? null,
+          rooms: parsedRooms ?? null,
+          status: 'NEW',
+          createdById: userId ?? undefined,
+        },
+        select: {
+          id: true,
+          title: true,
+          address: true,
+          type: true,
+          price: true,
+          area: true,
+          rooms: true,
+          createdById: true,
+        },
+      });
+    }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -172,7 +214,10 @@ export async function POST(request: NextRequest) {
     const zipUrl = `/uploads/${fileName}`;
     await prisma.listing.update({
       where: { id: listing.id },
-      data: { sourceZipUrl: zipUrl },
+      data: {
+        sourceZipUrl: zipUrl,
+        status: 'NEW',
+      },
     });
 
     let jobId: string | null = null;
@@ -180,12 +225,12 @@ export async function POST(request: NextRequest) {
       const job = await imageProcessDeepSeekQueue.add('process-listing-deepseek', {
         listingId: listing.id,
         zipUrl,
-        title: title.trim(),
-        price: parsedPrice,
-        address: address.trim(),
-        type: listingType,
-        area: parsedArea ?? null,
-        rooms: parsedRooms ?? null,
+        title: listing.title,
+        price: listing.price,
+        address: listing.address,
+        type: listing.type,
+        area: listing.area,
+        rooms: listing.rooms,
         userId,
       });
       jobId = job.id ?? null;
@@ -201,7 +246,9 @@ export async function POST(request: NextRequest) {
       fileName: file.name,
       jobId: jobId ?? undefined,
       message: jobId
-        ? 'Upload successful. DeepSeek AI is processing your images...'
+        ? listingId
+          ? 'Média byla přidána. DeepSeek AI zpracování bylo spuštěno.'
+          : 'Upload successful. DeepSeek AI is processing your images...'
         : 'Soubor uložen. Spusť Redis a worker (npm run dev) pro zpracování obrázků.',
     });
   } catch (error) {

@@ -174,6 +174,10 @@ export async function publishToSreality(jobData: ExportJobData): Promise<ExportR
 // Helper functions
 function mapPropertyType(type: string): string {
   const mapping: Record<string, string> = {
+    APARTMENT: "flat",
+    HOUSE: "house",
+    LAND: "land",
+    COMMERCIAL: "commercial",
     BYT: "flat",
     DUM: "house",
     POZEMEK: "land",
@@ -207,7 +211,10 @@ export async function callSrealityApi(
   token: string
 ): Promise<SrealityApiResponse> {
   try {
-    const response = await fetch("https://partner.sreality.cz/api/v1/listing", {
+    const apiUrl =
+      process.env.SREALITY_API_URL?.trim() ||
+      "https://partner.sreality.cz/api/v1/listing";
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

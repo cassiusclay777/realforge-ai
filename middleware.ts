@@ -16,14 +16,15 @@ export async function middleware(request: NextRequest) {
     "/register",
     "/api/auth",
     "/api/public",
-    "/api/listings", // GET public; POST protected in route
     "/preview",
   ]
+
+  const isPublicListingsGet = pathname === "/api/listings" && request.method === "GET"
 
   // Check if the route is public
   const isPublicRoute = publicRoutes.some(route => 
     pathname === route || pathname.startsWith(`${route}/`)
-  )
+  ) || isPublicListingsGet
 
   // If route is public, allow access
   if (isPublicRoute) {
@@ -32,6 +33,9 @@ export async function middleware(request: NextRequest) {
 
   // If user is not authenticated, redirect to login
   if (!token) {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Neautorizováno" }, { status: 401 })
+    }
     const loginUrl = new URL("/login", request.url)
     loginUrl.searchParams.set("callbackUrl", request.url)
     return NextResponse.redirect(loginUrl)
