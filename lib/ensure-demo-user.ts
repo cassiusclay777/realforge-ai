@@ -24,54 +24,44 @@ export async function ensureDemoUser(): Promise<{ email: string; created: boolea
   const name = (process.env.DEMO_USER_NAME || DEFAULT_NAME).trim() || DEFAULT_NAME
   const hashed = await bcrypt.hash(passwordPlain, 12)
 
-  const existing = await prisma.user.findFirst({
-    where: { email: { equals: email, mode: "insensitive" } },
-  })
-
-  if (existing) {
-    await prisma.$transaction(async (tx) => {
-      await tx.user.update({
-        where: { id: existing.id },
-        data: {
-          password: hashed,
-          name,
-          emailVerified: existing.emailVerified ?? new Date(),
-        },
-      })
-      await tx.agent.upsert({
-        where: { email },
-        create: {
-          email,
-          name,
-          userId: existing.id,
-        },
-        update: {
-          name,
-          userId: existing.id,
-        },
-      })
+  const created = await prisma.$transaction(async (tx) => {
+    const existed = await tx.user.findUnique({
+      where: { email },
+      select: { id: true },
     })
-    return { email, created: false }
-  }
 
-  await prisma.$transaction(async (tx) => {
-    const user = await tx.user.create({
-      data: {
+    const user = await tx.user.upsert({
+      where: { email },
+      create: {
         email,
         name,
         password: hashed,
         role: "AGENT",
         emailVerified: new Date(),
       },
+      update: {
+        password: hashed,
+        name,
+        emailVerified: new Date(),
+      },
+      select: { id: true },
     })
-    await tx.agent.create({
-      data: {
+
+    await tx.agent.upsert({
+      where: { email },
+      create: {
         email,
         name,
         userId: user.id,
       },
+      update: {
+        name,
+        userId: user.id,
+      },
     })
+
+    return !existed
   })
 
-  return { email, created: true }
+  return { email, created }
 }

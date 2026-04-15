@@ -680,10 +680,7 @@ export default function LeadDetailPageClient({ leadId }: { leadId: string }) {
                 <p className="text-sm font-medium mb-2">Zdroj leadu</p>
                 <div className="flex items-center gap-2">
                   <div className="flex-1 bg-muted h-2 rounded-full overflow-hidden">
-                    <div 
-                      className="bg-primary h-full" 
-                      style={{ width: '100%' }}
-                    />
+                    <div className="bg-primary h-full w-full" />
                   </div>
                   <span className="text-sm font-medium">{SOURCE_LABELS[lead.source] || lead.source}</span>
                 </div>

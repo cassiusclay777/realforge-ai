@@ -1,0 +1,25 @@
+.processingProgress {
+  width: 100%;
+  height: 0.75rem;
+  border: 0;
+  border-radius: 9999px;
+  overflow: hidden;
+  background-color: rgb(31 41 55);
+}
+
+.processingProgress::-webkit-progress-bar {
+  background-color: rgb(31 41 55);
+  border-radius: 9999px;
+}
+
+.processingProgress::-webkit-progress-value {
+  border-radius: 9999px;
+  background-image: linear-gradient(to right, rgb(59 130 246), rgb(168 85 247));
+  transition: width 500ms ease;
+}
+
+.processingProgress::-moz-progress-bar {
+  border-radius: 9999px;
+  background-image: linear-gradient(to right, rgb(59 130 246), rgb(168 85 247));
+  transition: width 500ms ease;
+}

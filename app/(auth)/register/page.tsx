@@ -67,13 +67,15 @@ export default function RegisterPage() {
       try {
         data = raw ? (JSON.parse(raw) as { error?: string }) : {};
       } catch {
-        throw new Error(
-          `Server vrátil neplatnou odpověď (HTTP ${response.status}). Běží Postgres a migrace?`
-        );
+        if (response.ok) {
+          throw new Error(
+            `Server vrátil neplatnou odpověď (HTTP ${response.status}). Běží Postgres a migrace?`
+          );
+        }
       }
 
       if (!response.ok) {
-        throw new Error(data.error || "Registrace selhala");
+        throw new Error(data.error || `Registrace selhala (HTTP ${response.status})`);
       }
 
       // Automatické přihlášení po registraci

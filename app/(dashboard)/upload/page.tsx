@@ -6,6 +6,7 @@ import { useUpload } from "@/hooks/use-upload";
 import { AlertCircle, CheckCircle, Image, Upload, Zap, Brain, Download } from "lucide-react";
 import { useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import styles from "./page.module.css";
 
 // ProgressStep komponenta
 const ProgressStep = ({ isActive, text }: { isActive: boolean; text: string }) => (
@@ -438,9 +439,11 @@ export default function UploadPage() {
           <span>{progress}%</span>
         </div>
         <div className="w-full bg-gray-800 rounded-full h-3">
-          <div
-            className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
+          <progress
+            value={progress}
+            max={100}
+            className={styles.processingProgress}
+            aria-label="Průběh zpracování"
           />
         </div>
       </div>
