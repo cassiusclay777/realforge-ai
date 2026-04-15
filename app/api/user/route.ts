@@ -43,7 +43,12 @@ export async function PATCH(request: NextRequest) {
     }
     const body = await request.json();
     const { name, email, phone, office } = body;
-    const data: { name?: string; email?: string; phone?: string; office?: string } = {};
+    const data: {
+      name?: string | null;
+      email?: string | null;
+      phone?: string | null;
+      office?: string | null;
+    } = {};
     if (typeof name === "string") data.name = name.trim() || null;
     if (typeof email === "string") data.email = email.trim() || null;
     if (typeof phone === "string") data.phone = phone.trim() || null;

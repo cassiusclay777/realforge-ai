@@ -107,7 +107,7 @@ export default function ActionButtonsWrapper({ listing, id, disabled = false, ai
   const handleDownloadAll = () => {
     setIsLoading("download");
     try {
-      const downloadUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/export/zip/${id}`;
+      const downloadUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3050"}/api/export/zip/${id}`;
       window.open(downloadUrl, '_blank');
     } catch (error) {
       console.error("Error downloading files:", error);

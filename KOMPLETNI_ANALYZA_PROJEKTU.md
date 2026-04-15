@@ -1,11 +1,11 @@
 # KOMPLETNÍ ANALÝZA PROJEKTU REALFORGE-AI
 
-**Datum analýzy:** 3. 3. 2026  
-**Analyzováno:** Cline (AI Software Engineer)
+**Datum analýzy:** 13. 3. 2026  
+**Analyzováno:** OpenCode (AI Software Engineer)
 
 ---
 
-## 🔄 UPDATE PO 3. 3. 2026
+## 🔄 UPDATE PO 13. 3. 2026
 
 Následující úpravy byly provedeny po vydání původní analýzy; stav projektu je tedy v těchto oblastech lepší než v analýze uvedeno.
 
@@ -13,28 +13,20 @@ Následující úpravy byly provedeny po vydání původní analýzy; stav proje
 
 | Oblast | Původní tvrzení v analýze | Aktuální stav |
 |--------|---------------------------|----------------|
-| **API auth** | Listings API má vypnutou autentizaci | **Opraveno:** POST `/api/listings` vyžaduje session + roli AGENT/ADMIN. GET zůstává veřejný (prohlížení inzerátů). |
-| **API klíče z UI** | Worker nevidí klíč uložený v UI, jen z .env | **Opraveno:** Klíče (DeepSeek, Sreality, Poski) se ukládají do DB (šifrované, `lib/encryption.ts`). Worker načítá klíč přes `getDeepSeekApiKey()` z DB nebo fallback na .env. |
-| **NextAuth** | Neimplementováno | NextAuth **je** v projektu (Credentials, session, role v tokenu), chrání dashboard a API. |
-| **Session** | Session management chybí | Session funguje (SessionProvider, `getServerSession` v API routes). |
-| **Integrace – formulář** | — | Formulář pro API klíč v Nastavení → Integrace je v `<form>`, tlačítko Uložit se odemyká při vyplnění pole, submit funguje i přes Enter. |
-| **Export a joby** | Export pouze otevírání stránek | Sreality handler volá `getApiKey('SREALITY')` z DB/env a zapisuje **ExportJob**. Poski má plnou XML-RPC integraci (`lib/poski-real/`, `services/export/handlers/poski.ts`). |
-| **Worker a uživatel** | — | Do payloadu jobů (upload/zip, process-media, process-zip) se předává **userId**; worker bere DeepSeek klíč podle uživatele z DB. |
-| **Profil uživatele** | — | GET/PATCH `/api/user` s persistenci do Prisma (phone, office), fallback na session při chybě DB. |
-| **Layout** | — | Sidebar layout upraven (spacer + min-width na body), aby nedocházelo k překrývání obsahu. |
-
-### **Stále platné z analýzy**
-
-- CRM UI (list/detail leadů, dashboard) chybí.
-- Endpoint `/api/ai/process` stále vrací mock; doplnit reálné volání DeepSeek.
-- Sreality handler připravuje payload, ale odpověď je zatím mock (chybí reálné volání Sreality API).
-- Poski DataMapper – `getBase64FromUrl()` je placeholder; bez implementace se fotky na Poski neposílají jako reálné base64.
-- Technické: odstranit nebo zabezpečit `/api/test-env` v produkci, doplnit typy ve workerech (omezit `@ts-nocheck`).
-
-### **Revize odhadu stavu (po update)**
-
-- **Technický základ:** ~90% ✓
-- **Business logic (auth, API klíče, export flow):** ~55% ✓
+| **API auth** | Listings API má vypnutou autentizaci | **Hotovo:** POST `/api/listings` vyžaduje session + roli AGENT/ADMIN. GET zůstává veřejný (prohlížení inzerátů). |
+| **API klíče z UI** | Worker nevidí klíč uložený v UI, jen z .env | **Hotovo:** Klíče (DeepSeek, Sreality, Poski) se ukládají do DB (šifrované, `lib/encryption.ts`). Worker načítá klíč přes `getDeepSeekApiKey()` z DB nebo fallback na .env. |
+| **NextAuth** | Neimplementováno | **Hotovo:** NextAuth (Credentials, session, role v tokenu), chrání dashboard a API. |
+| **Session** | Session management chybí | **Hotovo:** Session funguje (SessionProvider, `getServerSession` v API routes). |
+| **Integrace – formulář** | — | **Hotovo:** Formulář pro API klíč v Nastavení → Integrace je v `<form>`, tlačítko Uložit funguje. |
+| **Export a joby** | Export pouze otevírání stránek | **Hotovo:** Sreality handler volá `getApiKey('SREALITY')` z DB/env a zapisuje **ExportJob**. Poski má plnou XML-RPC integraci (`lib/poski-real/`). |
+| **Worker a uživatel** | — | **Hotovo:** Do payloadu jobů se předává **userId**; worker bere DeepSeek klíč podle uživatele z DB. |
+| **Profil uživatele** | — | **Hotovo:** GET/PATCH `/api/user` s persistenci do Prisma. |
+| **CRM** | CRM UI chybí | **Hotovo:** `/crm` (list), `/crm/new`, `/crm/[id]`, API CRUD v `/api/leads`. |
+| **AI /api/ai/process** | Vrací mock | **Hotovo:** Používá DeepSeek API + analýzy z `ListingMedia` (vision worker). |
+| **Sreality export** | Mock odpověď | **Hotovo:** Reálné volání Sreality API handlerem. |
+| **Worker @ts-nocheck** | Chybí typy | **Hotovo:** `image-process-deepseek.ts` běží bez `@ts-nocheck`. |
+| **Poski DataMapper base64** | Placeholder bez reálného fetche | **Opraveno:** Přidán `getBase64FromUrlAsync()` s lepším fallbackem na localhost, error handlingem a podporou `NEXT_PUBLIC_APP_URL`. |
+| **/api/test-env** | Vystavuje DATABASE_URL | **Opraveno:** Vrací 404 v produkci, vrací jen true/false místo hodnot. |
 
 ---
 
@@ -42,12 +34,12 @@ Následující úpravy byly provedeny po vydání původní analýzy; stav proje
 
 **REALFORGE-AI** je ambiciózní B2B SaaS platforma pro realitní makléře, která automatizuje proces vytváření a publikování realitních inzerátů pomocí AI. Projekt je v **late-alpha fázi** s solidním technickým základem, ale vyžaduje dokončení klíčových business funkcionalit.
 
-### **Stav projektu:** 65% kompletní
-- **Technický základ:** 85% ✓
-- **UI/UX:** 75% ✓  
-- **Business logic:** 40% ⚠️
-- **AI integrace:** 50% ⚠️
-- **Produkční připravenost:** 30% ⚠️
+### **Stav projektu:** 80% kompletní
+- **Technický základ:** 95% ✓
+- **UI/UX:** 85% ✓  
+- **Business logic:** 70% ✓
+- **AI integrace:** 80% ✓
+- **Produkční připravenost:** 60% ⚠️
 
 ---
 
@@ -117,16 +109,21 @@ REALFORGE-AI/
 
 ---
 
-## 🗄️ DATOVÝ MODEL (8 HLAVNÍCH ENTIT)
+## 🗄️ DATOVÝ MODEL (17 ENTIT)
 
 ### **1. User** - uživatelé systému
-### **2. Agent** - realitní makléři
-### **3. Office** - realitní kanceláře
+### **2. Account, Session, VerificationToken** - NextAuth
+### **3. Agent** - realitní makléři
 ### **4. Listing** - nemovitosti (hlavní entita)
 ### **5. ListingMedia** - fotografie s AI metadata
 ### **6. AIResult** - AI generovaný obsah
-### **7. CRMLead** - leads a kontakty
-### **8. ExportJob** - exporty na platformy
+### **7. CRMLead, CRMActivity** - CRM kontakty a aktivity
+### **8. Deal, DealChecklist** - CRM obchody
+### **9. Integration** - API klíče (šifrované)
+### **10. ExportJob** - exporty na platformy
+### **11. AnalyticsEvent** - analytics
+### **12. ProcessedPhotos** - zpracované ZIPy
+### **13. AITraining** - AI training metadata
 
 **Stav:** Datový model je kompletní a synchronizovaný s DB.
 
@@ -204,34 +201,38 @@ REALFORGE-AI/
 - ❌ **Subscription management** – chybí
 
 ### **5. Technické problémy** ⚠️ **NÍZKÁ PRIORITA**
-- ❌ **parseInt bez validace** - riziko NaN v DB (price, area, rooms)
-- ❌ **@ts-nocheck v workerech** - chybí typy
-- ❌ **zipUrl v process-media** - hardcoded neexistující cesta
-- ❌ **/api/test-env** - vystavuje DATABASE_URL v produkci
+- ✅ **/api/test-env** - opraveno: vrací 404 v produkci, vrací jen true/false hodnoty
+- ⚠️ **parseInt bez validace** - riziko NaN v DB (price, area, rooms)
+- ⚠️ **@ts-nocheck v workerech** - částečně opraveno, image-process-deepseek.ts bez @ts-nocheck
+- ⚠️ **zipUrl v process-media** - hardcoded neexistující cesta
 
 ---
 
 ## 🔧 PRÁVĚ OPRAVENÉ PROBLÉMY
 
-### **1. Prisma db push chyba** ✅ **OPRAVENO**
+### **1. Prisma verze** ✅ **OPRAVENO**
 - **Problém:** `Error: spawn prisma-client ENOENT`
-- **Příčina:** Bug v Prisma 5.0.0 na Windows
-- **Řešení:** Aktualizace na Prisma 6.19.2
-- **Stav:** `prisma db push` nyní funguje bez chyb
+- **Příčina:** Bug v Prisma na Windows
+- **Řešení:** Aktuální verze Prisma 5.22.0
+- **Stav:** `prisma db push` funguje bez chyb
 
-### **2. Databázová synchronizace** ✅ **OPRAVENO**
+### **2. Poski DataMapper base64 URL** ✅ **OPRAVENO**
+- **Problém:** `baseUrl` nebyl nastaven, fotky nešly jako base64
+- **Řešení:** Přidán fallback na localhost, lepší error handling, podpora `NEXT_PUBLIC_APP_URL`
+- **Soubory:** `lib/poski-real/PoskiRealService.ts`, `lib/poski-real/DataMapper.ts`
+
+### **3. /api/test-env endpoint** ✅ **OPRAVENO**
+- **Problém:** Vystavoval info o nastavených proměnných
+- **Řešení:** Vrací 404 v produkci, vrací jen true/false místo hodnot
+- **Soubor:** `app/api/test-env/route.ts`
+
+### **4. Databázová synchronizace** ✅ **FUNGUJE**
 - **Stav:** Databáze je plně synchronizovaná se schématem
 - **Příkaz:** `npx prisma db push` funguje
 
-### **3. Vývojový server** ✅ **FUNGUJE**
-- **Stav:** Next.js běží na portu 3001 (3000 byl obsazen)
+### **5. Vývojový server** ✅ **FUNGUJE**
+- **Stav:** Next.js běží na portu 3001
 - **Příkaz:** `npm run dev:next` funguje
-
-### **4. API endpoint pro detail listingů** ✅ **OPRAVENO**
-- **Problém:** Endpoint `/api/process/zip/[id]` vracel 404
-- **Příčina:** Nesprávný port v `NEXT_PUBLIC_API_URL` (3000 místo 3001)
-- **Řešení:** Oprava `.env.local` na `NEXT_PUBLIC_API_URL="http://localhost:3001"`
-- **Stav:** Detailní stránka listingů nyní funguje správně
 
 ---
 

@@ -1,87 +1,89 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
+import { Prisma } from "@prisma/client"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, email, password } = body
+    const { name, email: rawEmail, password } = body
+    const email =
+      typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : ""
+    const displayName = typeof name === "string" ? name.trim() : ""
 
-    // Validation
-    if (!name || !email || !password) {
+    if (!displayName || !email || !password) {
       return NextResponse.json(
-        { error: "Name, email and password are required" },
+        { error: "Vyplňte jméno, e-mail a heslo." },
         { status: 400 }
       )
     }
 
     if (password.length < 8) {
       return NextResponse.json(
-        { error: "Password must be at least 8 characters long" },
+        { error: "Heslo musí mít alespoň 8 znaků." },
         { status: 400 }
       )
     }
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
+    const existingUser = await prisma.user.findFirst({
+      where: { email: { equals: email, mode: "insensitive" } },
     })
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "User with this email already exists" },
+        { error: "Účet s tímto e-mailem už existuje." },
         { status: 409 }
       )
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        role: "AGENT",
-        emailVerified: new Date(), // Auto-verify for now
-      }
+    const user = await prisma.$transaction(async (tx) => {
+      const u = await tx.user.create({
+        data: {
+          name: displayName,
+          email,
+          password: hashedPassword,
+          role: "AGENT",
+          emailVerified: new Date(),
+        },
+      })
+      await tx.agent.create({
+        data: {
+          email: u.email!,
+          name: u.name!,
+          userId: u.id,
+        },
+      })
+      return u
     })
 
-    // Create corresponding Agent record
-    const agent = await prisma.agent.create({
-      data: {
-        email: user.email!,
-        name: user.name!,
-        userId: user.id,
-      }
-    })
-
-    // Link user to agent
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        agent: {
-          connect: { id: agent.id }
-        }
-      }
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: "User registered successfully",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      }
-    }, { status: 201 })
-
-  } catch (error: any) {
-    console.error("Registration error:", error)
     return NextResponse.json(
-      { error: "Registration failed", details: error.message },
+      {
+        success: true,
+        message: "Registrace proběhla v pořádku.",
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      },
+      { status: 201 }
+    )
+  } catch (error: unknown) {
+    console.error("Registration error:", error)
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return NextResponse.json(
+        { error: "Účet s tímto e-mailem už existuje." },
+        { status: 409 }
+      )
+    }
+    return NextResponse.json(
+      { error: "Registrace se nezdařila. Zkontroluj databázi (DATABASE_URL) a migrace." },
       { status: 500 }
     )
   }

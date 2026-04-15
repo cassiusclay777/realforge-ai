@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail --names \"NEXT,WORKER\" \"next dev -p 3001\" \"npm run worker:deepseek\"",
-    "dev:next": "next dev -p 3001",
+    "predev": "docker start realforge-redis realforge-postgres || docker-compose up -d redis postgres",
+    "dev": "concurrently --kill-others-on-fail --names \"NEXT,WORKER\" \"npx kill-port 3050 && next dev -p 3050\" \"npm run worker:deepseek\"",
+    "dev:next": "npx kill-port 3050 && next dev -p 3050",
     "dev:full": "docker-compose up -d && npm run dev",
     "dev:all": "npm run dev",
-    "dev:turbo": "next dev -p 3001",
+    "dev:turbo": "npx kill-port 3050 && next dev -p 3050",
     "build": "next build",
     "start": "next start",
     "worker": "tsx workers/image-process.ts",
     "worker:deepseek": "tsx workers/image-process-deepseek.ts",
-    "test:dev": "concurrently --kill-others-on-fail \"next dev -p 3001\" \"npm run worker:deepseek\"",
+    "test:dev": "concurrently --kill-others-on-fail \"npx kill-port 3050 && next dev -p 3050\" \"npm run worker:deepseek\"",
     "test:deepseek": "node test-deepseek-simple.js",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -20,7 +21,13 @@
     "test:watch": "vitest --watch",
     "test:run": "vitest run",
     "postinstall": "prisma generate",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:migrate": "tsx scripts/run-with-local-env.ts npx prisma migrate deploy",
+    "db:setup": "tsx scripts/run-with-local-env.ts npx prisma migrate deploy && tsx prisma/seed.ts",
     "tauri": "tauri"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -66,6 +73,7 @@
   "devDependencies": {
     "@prisma/client": "^5.22.0",
     "@tailwindcss/postcss": "^4",
+    "@tauri-apps/cli": "^2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/adm-zip": "^0.5.7",
@@ -81,12 +89,12 @@
     "concurrently": "^9.2.1",
     "happy-dom": "^20.6.1",
     "jsdom": "^28.1.0",
+    "kill-port": "^2.0.1",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5",
-    "vitest": "^4.0.18",
-    "@tauri-apps/cli": "^2"
+    "vitest": "^4.0.18"
   }
 }

@@ -253,10 +253,15 @@ export class PoskiRealService {
     try {
       const advertData = PoskiDataMapper.mapListingToAdvert(listing, sellerId);
       let baseUrl = '';
-      if (typeof process !== 'undefined' && process.env?.NEXTAUTH_URL) {
+      if (process.env?.NEXTAUTH_URL) {
         baseUrl = process.env.NEXTAUTH_URL;
-      } else if (typeof process !== 'undefined' && process.env?.VERCEL_URL) {
+      } else if (process.env?.VERCEL_URL) {
         baseUrl = `https://${process.env.VERCEL_URL}`;
+      } else if (process.env?.NEXT_PUBLIC_APP_URL) {
+        baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+      } else {
+        console.warn('[PoskiRealService] NEXTAUTH_URL not set - using localhost fallback for image URLs. Set NEXTAUTH_URL in production!');
+        baseUrl = 'http://localhost:3050';
       }
       const photos = await PoskiDataMapper.mapMediaToPhotosAsync(listing.media, baseUrl);
 

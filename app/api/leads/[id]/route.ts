@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -16,7 +16,7 @@ export async function GET(
       );
     }
 
-    const leadId = params.id;
+    const leadId = (await params).id;
 
     // Find lead with all relations
     const lead = await prisma.cRMLead.findUnique({
@@ -146,7 +146,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -157,7 +157,7 @@ export async function PUT(
       );
     }
 
-    const leadId = params.id;
+    const leadId = (await params).id;
     const body = await request.json();
     
     // Check if lead exists
@@ -230,7 +230,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -241,7 +241,7 @@ export async function DELETE(
       );
     }
 
-    const leadId = params.id;
+    const leadId = (await params).id;
 
     // Check if lead exists
     const existingLead = await prisma.cRMLead.findUnique({

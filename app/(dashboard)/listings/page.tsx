@@ -6,6 +6,8 @@ import { Eye, Edit, Trash2, Plus } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 import { getTypeLabel } from '@/lib/listing-labels';
 
+export const dynamic = "force-dynamic";
+
 export default async function ListingsPage() {
   // Načtení reálných dat z databáze
   let listings = [];

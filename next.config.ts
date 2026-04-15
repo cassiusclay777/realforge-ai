@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Use port 3001
+  // Dev port is set in package.json (default 3050; avoids clashes with tools on 3001)
   devIndicators: {
     position: 'bottom-right',
   },

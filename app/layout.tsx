@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="cs" suppressHydrationWarning className="dark">
+    <html lang="cs" suppressHydrationWarning>
       <body className={`${plusJakarta.className} antialiased min-w-[1024px]`} suppressHydrationWarning>
         <Providers>
           {children}

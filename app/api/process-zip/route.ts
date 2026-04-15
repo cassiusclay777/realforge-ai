@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
       message: 'ZIP successfully processed with AI',
       outputZipUrl,
       categories,
-      downloadUrl: `${process.env.NEXTAUTH_URL || 'http://localhost:3001'}${outputZipUrl}`
+      downloadUrl: `${process.env.NEXTAUTH_URL || 'http://localhost:3050'}${outputZipUrl}`
     });
 
   } catch (error) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { signIn, getCsrfToken } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail, Lock, AlertCircle, LogIn } from "lucide-react";
 
+function mapCredentialsSignInError(error: string | undefined): string {
+  if (!error) return "Přihlášení se nezdařilo.";
+  if (error === "CredentialsSignin") {
+    return "Neplatný e-mail nebo heslo. Nemáte účet? Zaregistrujte se.";
+  }
+  return error;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -18,19 +26,19 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMagicLink, setShowMagicLink] = useState(false);
-  const [csrfToken, setCsrfToken] = useState<string>("");
+  const [providerIds, setProviderIds] = useState<string[]>([]);
 
   useEffect(() => {
-    // Get CSRF token on component mount
-    const fetchCsrfToken = async () => {
+    const fetchProviders = async () => {
       try {
-        const token = await getCsrfToken();
-        setCsrfToken(token || "");
-      } catch (err) {
-        console.error("Failed to fetch CSRF token:", err);
+        const res = await fetch("/api/auth/providers");
+        const data = (await res.json()) as Record<string, unknown>;
+        setProviderIds(Object.keys(data || {}));
+      } catch {
+        setProviderIds(["credentials"]);
       }
     };
-    fetchCsrfToken();
+    fetchProviders();
   }, []);
 
   const handleCredentialsLogin = async (e: React.FormEvent) => {
@@ -40,14 +48,13 @@ export default function LoginPage() {
 
     try {
       const result = await signIn("credentials", {
-        email,
+        email: email.trim().toLowerCase(),
         password,
         redirect: false,
-        csrfToken,
       });
 
       if (result?.error) {
-        setError(result.error);
+        setError(mapCredentialsSignInError(result.error));
       } else {
         router.push("/dashboard");
         router.refresh();
@@ -112,6 +119,15 @@ export default function LoginPage() {
           <CardDescription>
             Přihlaste se pomocí emailu a hesla, magic linku nebo Google účtu
           </CardDescription>
+          {process.env.NODE_ENV === "development" && (
+            <p className="text-center text-xs text-muted-foreground px-2">
+              Vývoj: stálý účet <span className="font-mono">demo@realforge.ai</span> /{" "}
+              <span className="font-mono">demo12345</span> (po{" "}
+              <span className="font-mono">npm run db:seed</span> nebo startu dev serveru).
+              Heslo lze změnit přes <span className="font-mono">DEMO_PASSWORD</span> v{" "}
+              <span className="font-mono">.env</span> (min. 8 znaků).
+            </p>
+          )}
         </CardHeader>
 
         <CardContent className="space-y-4">
@@ -132,9 +148,6 @@ export default function LoginPage() {
           ) : (
             <>
               <form onSubmit={handleCredentialsLogin} className="space-y-4">
-                {/* Hidden CSRF token input */}
-                <input type="hidden" name="csrfToken" value={csrfToken} />
-                
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
@@ -179,6 +192,8 @@ export default function LoginPage() {
                 </Button>
               </form>
 
+              {(providerIds.includes("email") || providerIds.includes("google")) && (
+              <>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
@@ -191,6 +206,7 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-3">
+                {providerIds.includes("email") && (
                 <Button
                   type="button"
                   variant="outline"
@@ -201,7 +217,9 @@ export default function LoginPage() {
                   <Mail className="mr-2 h-4 w-4" />
                   Přihlásit se magic linkem
                 </Button>
+                )}
 
+                {providerIds.includes("google") && (
                 <Button
                   type="button"
                   variant="outline"
@@ -229,7 +247,10 @@ export default function LoginPage() {
                   </svg>
                   Přihlásit se přes Google
                 </Button>
+                )}
               </div>
+              </>
+              )}
             </>
           )}
         </CardContent>

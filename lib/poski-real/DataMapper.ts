@@ -245,12 +245,21 @@ export class PoskiDataMapper {
    * Stáhne obrázek z URL a vrátí base64 řetězec (bez data URL prefixu).
    * Pro relativní cesty použij baseUrl (např. NEXTAUTH_URL).
    * Poski očekává JPG, max 5 MB, min 480×360.
+   *
+   * **Produkční kontrola:** `baseUrl` musí odpovídat veřejné URL aplikace, aby šly
+   * relativní cesty k fotkám (`/uploads/...`) správně fetchnout (typicky `NEXTAUTH_URL`,
+   * na Vercelu často `VERCEL_URL` / `NEXT_PUBLIC_APP_URL`). Bez toho vyhodí chybu
+   * „baseUrl is required“ nebo fetch selže (404).
    */
   static async getBase64FromUrlAsync(url: string, baseUrl: string = ''): Promise<string> {
+    if (!baseUrl) {
+      console.error('[PoskiDataMapper] baseUrl is empty - cannot convert relative URL. Pass baseUrl from NEXTAUTH_URL/VERCEL_URL environment variable.');
+      throw new Error('baseUrl is required for converting relative image URLs to base64. Set NEXTAUTH_URL environment variable.');
+    }
     const fullUrl = url.startsWith('http') ? url : `${baseUrl.replace(/\/$/, '')}${url.startsWith('/') ? url : `/${url}`}`;
     const res = await fetch(fullUrl);
     if (!res.ok) {
-      throw new Error(`Failed to fetch image: ${res.status} ${res.statusText}`);
+      throw new Error(`Failed to fetch image: ${res.status} ${res.statusText} (URL: ${fullUrl})`);
     }
     const buf = await res.arrayBuffer();
     const base64 = Buffer.from(buf).toString('base64');

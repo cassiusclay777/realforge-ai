@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
     const listing = await prisma.listing.findUnique({
       where: { id: listingId },
       include: {
-        processedPhotos: true
+        processedPhotos: true,
+        aiResult: true,
       }
     });
 
@@ -53,8 +54,8 @@ export async function POST(request: NextRequest) {
       (Array.isArray(listing.images) ? listing.images : JSON.parse(listing.images as string)) : 
       [];
     
-    // Parse aiResult if it exists
-    const aiResults = listing.aiResult ? JSON.parse(listing.aiResult) : null;
+    // aiResult is a Prisma relation (object), not a JSON string
+    const aiResults = listing.aiResult ?? null;
     
     const poskiData = transformToPoskiFormat(
       listing,

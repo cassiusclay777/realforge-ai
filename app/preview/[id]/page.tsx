@@ -12,7 +12,7 @@ interface PreviewPageProps {
 async function getListingData(id: string) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/process/zip/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3050"}/api/process/zip/${id}`,
       { cache: "no-store" }
     );
     

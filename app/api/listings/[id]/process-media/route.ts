@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { imageProcessDeepSeekQueue } from '@/lib/queues';
+import { ensureListingOwnership } from '@/lib/api-listing-auth';
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Neautorizováno' }, { status: 401 });
+    }
+
     const { id } = await params;
-    
+    const auth = await ensureListingOwnership(id, session.user.id);
+    if ("error" in auth) return auth.error;
+
     // Získání listingu
     const listing = await prisma.listing.findUnique({
       where: { id },
@@ -25,7 +35,7 @@ export async function POST(
 
     if (!listing) {
       return NextResponse.json(
-        { error: 'Listing not found' },
+        { error: 'Listing nenalezen.' },
         { status: 404 }
       );
     }
@@ -37,10 +47,10 @@ export async function POST(
 
     if (hasProcessingMedia) {
       return NextResponse.json(
-        { 
+        {
           success: false,
-          error: 'Processing already in progress',
-          message: 'Media processing is already running for this listing'
+          error: 'Zpracování již probíhá',
+          message: 'U tohoto listingu již běží zpracování médií.'
         },
         { status: 400 }
       );
@@ -110,10 +120,10 @@ export async function POST(
   } catch (error) {
     console.error('Error starting media processing:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: 'Failed to start media processing',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        error: 'Spuštění zpracování médií selhalo',
+        message: error instanceof Error ? error.message : 'Neznámá chyba'
       },
       { status: 500 }
     );
@@ -126,8 +136,15 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Neautorizováno' }, { status: 401 });
+    }
+
     const { id } = await params;
-    
+    const auth = await ensureListingOwnership(id, session.user.id);
+    if ("error" in auth) return auth.error;
+
     // Získání informací o aktivních jobech pro tento listing
     // Poznámka: Toto je zjednodušená implementace
     // V reálném případě bychom potřebovali query BullMQ queue
@@ -147,7 +164,7 @@ export async function GET(
 
     if (!listing) {
       return NextResponse.json(
-        { error: 'Listing not found' },
+        { error: 'Listing nenalezen.' },
         { status: 404 }
       );
     }
@@ -187,10 +204,10 @@ export async function GET(
   } catch (error) {
     console.error('Error getting processing info:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: 'Failed to get processing information',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        error: 'Nepodařilo se načíst stav zpracování',
+        message: error instanceof Error ? error.message : 'Neznámá chyba'
       },
       { status: 500 }
     );

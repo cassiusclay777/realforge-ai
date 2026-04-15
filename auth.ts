@@ -1,4 +1,4 @@
-import NextAuth, { type NextAuthOptions } from "next-auth"
+import type { NextAuthOptions } from "next-auth"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import EmailProvider from "next-auth/providers/email"
@@ -7,7 +7,6 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
 export const authOptions: NextAuthOptions = {
-  trustHost: true,
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
@@ -41,28 +40,27 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Please enter email and password")
+          return null
         }
 
-        // Find user by email
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string }
+        const email = String(credentials.email).trim().toLowerCase()
+        const password = credentials.password as string
+
+        const user = await prisma.user.findFirst({
+          where: { email: { equals: email, mode: "insensitive" } },
         })
 
-        if (!user) {
-          throw new Error("User not found")
+        if (!user?.email) {
+          return null
         }
 
-        // Check if user has password (not OAuth user)
         if (!user.password) {
-          throw new Error("Please use email or Google login")
+          return null
         }
 
-        // Verify password
-        const isValid = await bcrypt.compare(credentials.password as string, user.password)
-
+        const isValid = await bcrypt.compare(password, user.password)
         if (!isValid) {
-          throw new Error("Invalid password")
+          return null
         }
 
         return {
@@ -70,27 +68,35 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
-          image: user.image
+          image: user.image,
         }
       },
     }),
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST || "",
-        port: Number(process.env.EMAIL_SERVER_PORT) || 587,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER || "",
-          pass: process.env.EMAIL_SERVER_PASSWORD || "",
-        },
-      },
-      from: process.env.EMAIL_FROM || "noreply@realforge.ai",
-      maxAge: 24 * 60 * 60, // Magic link valid for 24 hours
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      allowDangerousEmailAccountLinking: true,
-    }),
+    ...(process.env.EMAIL_SERVER_HOST
+      ? [
+          EmailProvider({
+            server: {
+              host: process.env.EMAIL_SERVER_HOST,
+              port: Number(process.env.EMAIL_SERVER_PORT) || 587,
+              auth: {
+                user: process.env.EMAIL_SERVER_USER || "",
+                pass: process.env.EMAIL_SERVER_PASSWORD || "",
+              },
+            },
+            from: process.env.EMAIL_FROM || "noreply@realforge.ai",
+            maxAge: 24 * 60 * 60,
+          }),
+        ]
+      : []),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            allowDangerousEmailAccountLinking: true,
+          }),
+        ]
+      : []),
   ],
   callbacks: {
     async session({ session, token }) {
@@ -128,8 +134,6 @@ export const authOptions: NextAuthOptions = {
   debug: false,
   secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
 }
-
-export const { handlers, auth, signIn, signOut } = NextAuth(authOptions)
 
 // Extend NextAuth types
 declare module "next-auth" {

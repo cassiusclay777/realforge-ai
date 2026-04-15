@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { ensureListingOwnership } from '@/lib/api-listing-auth';
 import AdmZip from 'adm-zip';
 
 function getAbsoluteUrl(url: string): string {
@@ -7,7 +10,7 @@ function getAbsoluteUrl(url: string): string {
   const base =
     process.env.NEXTAUTH_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-    'http://localhost:3001';
+    'http://localhost:3050';
   return url.startsWith('/') ? `${base}${url}` : `${base}/${url}`;
 }
 
@@ -16,7 +19,14 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Neautorizováno' }, { status: 401 });
+    }
+
     const { id } = await params;
+    const auth = await ensureListingOwnership(id, session.user.id);
+    if ("error" in auth) return auth.error;
 
     const listing = await prisma.listing.findUnique({
       where: { id },
@@ -29,12 +39,12 @@ export async function GET(
     });
 
     if (!listing) {
-      return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Listing nenalezen.' }, { status: 404 });
     }
 
     if (listing.media.length === 0) {
       return NextResponse.json(
-        { error: 'No media files to export' },
+        { error: 'K listingu nejsou nahrána žádná média k exportu.' },
         { status: 400 }
       );
     }
@@ -57,20 +67,21 @@ export async function GET(
     }
 
     const zipBuffer = zip.toBuffer();
+    const zipBytes = new Uint8Array(zipBuffer);
     const filename = `listing-${id}-media.zip`;
 
-    return new NextResponse(zipBuffer, {
+    return new NextResponse(zipBytes, {
       status: 200,
       headers: {
         'Content-Type': 'application/zip',
         'Content-Disposition': `attachment; filename="${filename}"`,
-        'Content-Length': String(zipBuffer.length),
+        'Content-Length': String(zipBytes.length),
       },
     });
   } catch (error) {
     console.error('Export media error:', error);
     return NextResponse.json(
-      { error: 'Failed to export media' },
+      { error: 'Export médií selhal.' },
       { status: 500 }
     );
   }

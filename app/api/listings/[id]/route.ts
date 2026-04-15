@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { parsePositiveInt } from "@/lib/validation/numbers";
+import { ensureListingOwnership } from "@/lib/api-listing-auth";
 
 export async function PATCH(
   request: NextRequest,
@@ -14,6 +15,9 @@ export async function PATCH(
       return NextResponse.json({ error: "Neautorizováno" }, { status: 401 });
     }
     const { id } = await params;
+    const auth = await ensureListingOwnership(id, session.user.id);
+    if ("error" in auth) return auth.error;
+
     const body = await request.json();
     const {
       title,

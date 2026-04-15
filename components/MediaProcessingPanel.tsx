@@ -25,6 +25,7 @@ function LastUpdatedLabel({ lastUpdated }: Readonly<{ lastUpdated: string | null
     update();
     const t = setInterval(update, 1000);
     return () => clearInterval(t);
+    // Záměrně bez lastUpdated v deps: interval pouze aktualizuje label, nepotřebuje znovu běžet při změně lastUpdated
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastUpdated]);
   if (!lastUpdated) return null;
@@ -186,7 +187,8 @@ export function MediaProcessingPanel({
         {processedMediaItems.length > 0 && (
           <div className="mt-3 text-xs text-muted-foreground">
             {processedMediaItems.length} of {totalMedia} media files processed
-            {state?.statusCounts.FAILED > 0 && `, ${state.statusCounts.FAILED} failed`}
+            {(state?.statusCounts.FAILED ?? 0) > 0 &&
+              `, ${state?.statusCounts.FAILED ?? 0} failed`}
           </div>
         )}
       </div>

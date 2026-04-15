@@ -2,6 +2,9 @@
     "recommendations": [
         "colourafredi.vscode-deepseek",
         "saoudrizwan.claude-dev",
-        "continue.continue"
+        "continue.continue",
+        "ms-azuretools.vscode-docker",
+        "prisma.prisma-insider",
+        "prisma.prisma"
     ]
 }

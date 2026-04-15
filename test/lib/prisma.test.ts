@@ -4,41 +4,52 @@ import { PrismaClient } from '@prisma/client';
 
 // Mock PrismaClient
 vi.mock('@prisma/client', () => {
-  const mockPrismaClient = vi.fn(() => ({
-    $connect: vi.fn(),
-    $disconnect: vi.fn(),
-    $on: vi.fn(),
-    user: {
-      findUnique: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-    },
-    listing: {
-      findMany: vi.fn(),
-      findUnique: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-    },
-    listingMedia: {
-      findMany: vi.fn(),
-      create: vi.fn(),
-      delete: vi.fn(),
-    },
-    aiResult: {
-      findMany: vi.fn(),
-      create: vi.fn(),
-    },
-    crmLead: {
-      findMany: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-    },
-  }));
+  const $connect = vi.fn();
+  const $disconnect = vi.fn();
+  const $on = vi.fn();
+  const user = {
+    findUnique: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+  };
+  const listing = {
+    findMany: vi.fn(),
+    findUnique: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+  };
+  const listingMedia = {
+    findMany: vi.fn(),
+    create: vi.fn(),
+    delete: vi.fn(),
+  };
+  const aiResult = {
+    findMany: vi.fn(),
+    create: vi.fn(),
+  };
+  const crmLead = {
+    findMany: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+  };
+
+  const MockPrismaClient = vi.fn(function MockPrismaClient() {
+    return {
+      $connect,
+      $disconnect,
+      $on,
+      user,
+      listing,
+      listingMedia,
+      aiResult,
+      crmLead,
+    };
+  });
 
   return {
-    PrismaClient: mockPrismaClient,
+    PrismaClient: MockPrismaClient,
   };
 });
 

@@ -153,6 +153,7 @@ export default async function ListingDetailPage({
             </div>
             <MediaGallery
               media={listing.media}
+              listingId={id}
               compact={true}
             />
             {listing.media.some(m => m.aiDescription && m.processingStatus === 'DONE') && (

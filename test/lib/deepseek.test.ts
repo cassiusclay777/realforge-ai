@@ -4,26 +4,19 @@ import type { DeepSeekImageAnalysis, DeepSeekContentGeneration } from '@/lib/dee
 
 // Mock OpenAI
 vi.mock('openai', () => {
-  const mockChatCompletions = {
-    create: vi.fn(),
-  };
-
-  const mockModels = {
-    list: vi.fn(),
-  };
-
-  const mockChat = {
-    completions: mockChatCompletions,
-  };
-
-  const mockOpenAI = vi.fn(() => ({
-    chat: mockChat,
-    models: mockModels,
-  }));
-
-  return {
-    default: mockOpenAI,
-  };
+  const create = vi.fn();
+  const list = vi.fn();
+  
+  const MockOpenAI = vi.fn(function MockOpenAI() {
+    return {
+      chat: {
+        completions: { create },
+      },
+      models: { list },
+    };
+  });
+  
+  return { default: MockOpenAI };
 });
 
 // Mock dotenv

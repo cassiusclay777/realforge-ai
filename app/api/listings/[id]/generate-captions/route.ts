@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { generatePhotoCaption } from '@/lib/caption-generator';
+import { ensureListingOwnership } from '@/lib/api-listing-auth';
 import path from 'path';
 
 const CONCURRENCY = 5;
@@ -15,36 +16,40 @@ function chunk<T>(arr: T[], size: number): T[][] {
 
 /**
  * POST /api/listings/[id]/generate-captions
- * Vygeneruje popisky (caption + altText) pro všechny fotky listingu, které je ještě nemají.
+ * Vygeneruje popisky (caption + altText) pro fotky listingu.
+ * ?force=true = přegenerovat i fotky, které už popisek mají.
  */
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Neautorizováno' }, { status: 401 });
     }
 
     const { id: listingId } = await params;
+    const auth = await ensureListingOwnership(listingId, session.user.id);
+    if ("error" in auth) return auth.error;
+
+    const force = request.nextUrl.searchParams.get('force') === 'true';
+
+    const mediaWhere = force
+      ? undefined
+      : { OR: [{ aiCaption: null }, { aiCaption: "" }] };
     const listing = await prisma.listing.findUnique({
       where: { id: listingId },
       include: {
         media: {
-          where: {
-            OR: [
-              { aiCaption: null },
-              { aiCaption: '' },
-            ],
-          },
+          ...(mediaWhere !== undefined && { where: mediaWhere }),
           orderBy: { sortOrder: 'asc' },
         },
       },
     });
 
     if (!listing) {
-      return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Listing nenalezen.' }, { status: 404 });
     }
 
     const mediaWithoutCaption = listing.media;

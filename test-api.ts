@@ -5,7 +5,7 @@ async function testAPI() {
     console.log('Testing API endpoint: http://localhost:3001/api/listings?limit=3');
     
     const response = await fetch('http://localhost:3001/api/listings?limit=3');
-    const data = await response.json();
+    const data: any = await response.json();
     
     console.log('Status:', response.status);
     console.log('Success:', data.success);

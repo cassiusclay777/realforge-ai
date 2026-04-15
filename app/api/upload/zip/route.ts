@@ -15,7 +15,13 @@ function titleFromFilename(name: string): string {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id ?? undefined;
+    if (!session) {
+      return NextResponse.json(
+        { error: "Neautorizováno" },
+        { status: 401 }
+      );
+    }
+    const userId = session.user.id;
 
     const formData = await request.formData();
     const rawFiles = formData.getAll('zipFile');

@@ -1,0 +1,22 @@
+# AgenticSeek – override pro tento projekt jako WORK_DIR
+# Backend pak vidí tento repozitář v /opt/workspace (viz AGENTICSEEK.md).
+#
+# DŮLEŽITÉ: Při více -f je projektový adresář ten z prvního souboru, takže "." by
+# ukazovalo na AgenticSeek. Proto workspace musí být explicitní cesta přes WORKSPACE_DIR.
+#
+# Windows (PowerShell) – spusť z kořene RealForge-AI (aby --env-file .env našel .env):
+#   docker compose -f C:\Users\Patri\agenticSeek\docker-compose.yml -f docker-compose.agenticseek.yml --env-file .env --profile full up
+# Proměnné AGENTICSEEK_REPO a WORKSPACE_DIR musí být v .env (viz konec .env v tomto projektu).
+#
+# Linux/macOS:
+#   export AGENTICSEEK_REPO=/path/to/agenticSeek
+#   export WORKSPACE_DIR=/path/to/REALFORGE-AI
+#   docker compose -f "$AGENTICSEEK_REPO/docker-compose.yml" -f "$WORKSPACE_DIR/docker-compose.agenticseek.yml" --profile full up
+#
+# Webové rozhraní: http://localhost:3002
+
+services:
+  backend:
+    volumes:
+      - ${AGENTICSEEK_REPO:?Set AGENTICSEEK_REPO}:/app
+      - ${WORKSPACE_DIR:?Set WORKSPACE_DIR}:/opt/workspace

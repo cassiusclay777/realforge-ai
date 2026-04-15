@@ -37,6 +37,8 @@ docker-compose up -d postgres redis
 # 3. Update DATABASE_URL in .env.local
 ```
 
+Postgres v Compose mapuje host port **5433 → 5432** (viz `POSTGRES_PORT` v `.env`), aby nekolidoval s jiným Postgres na **5432** (např. Supabase). `DATABASE_URL` musí používat stejný port jako `POSTGRES_PORT`.
+
 4. **Run database migrations:**
 ```bash
 npx prisma db push

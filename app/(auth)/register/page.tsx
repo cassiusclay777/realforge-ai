@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,6 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail, Lock, User, AlertCircle, UserPlus } from "lucide-react";
 
+function mapCredentialsSignInError(error: string | undefined): string {
+  if (!error) return "Automatické přihlášení po registraci selhalo.";
+  if (error === "CredentialsSignin") {
+    return "Přihlášení selhalo (zkuste se přihlásit ručně na přihlašovací stránce).";
+  }
+  return error;
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -20,6 +28,14 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [providerIds, setProviderIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("/api/auth/providers")
+      .then((r) => r.json())
+      .then((data: Record<string, unknown>) => setProviderIds(Object.keys(data || {})))
+      .catch(() => setProviderIds(["credentials"]));
+  }, []);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +62,15 @@ export default function RegisterPage() {
         body: JSON.stringify({ name, email, password }),
       });
 
-      const data = await response.json();
+      const raw = await response.text();
+      let data: { error?: string } = {};
+      try {
+        data = raw ? (JSON.parse(raw) as { error?: string }) : {};
+      } catch {
+        throw new Error(
+          `Server vrátil neplatnou odpověď (HTTP ${response.status}). Běží Postgres a migrace?`
+        );
+      }
 
       if (!response.ok) {
         throw new Error(data.error || "Registrace selhala");
@@ -54,13 +78,13 @@ export default function RegisterPage() {
 
       // Automatické přihlášení po registraci
       const result = await signIn("credentials", {
-        email,
+        email: email.trim().toLowerCase(),
         password,
         redirect: false,
       });
 
       if (result?.error) {
-        setError(result.error);
+        setError(mapCredentialsSignInError(result.error));
       } else {
         setSuccess(true);
         setTimeout(() => {
@@ -97,6 +121,14 @@ export default function RegisterPage() {
           <CardDescription className="text-center">
             Vytvořte si účet a začněte používat AI realitní engine
           </CardDescription>
+          {process.env.NODE_ENV === "development" && (
+            <p className="text-center text-xs text-muted-foreground px-2">
+              Pokud registrace padá na DB, spusť{" "}
+              <span className="font-mono">npx prisma migrate deploy</span> a měj rozjetý Postgres z{" "}
+              <span className="font-mono">docker-compose</span>. Stálý demo účet:{" "}
+              <span className="font-mono">demo@realforge.ai</span> / <span className="font-mono">demo12345</span>.
+            </p>
+          )}
         </CardHeader>
 
         <CardContent className="space-y-4">
@@ -129,6 +161,7 @@ export default function RegisterPage() {
                       onChange={(e) => setName(e.target.value)}
                       className="pl-10"
                       required
+                      autoComplete="name"
                     />
                   </div>
                 </div>
@@ -145,6 +178,7 @@ export default function RegisterPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-10"
                       required
+                      autoComplete="email"
                     />
                   </div>
                 </div>
@@ -162,6 +196,7 @@ export default function RegisterPage() {
                       className="pl-10"
                       required
                       minLength={8}
+                      autoComplete="new-password"
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
@@ -181,6 +216,7 @@ export default function RegisterPage() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       className="pl-10"
                       required
+                      autoComplete="new-password"
                     />
                   </div>
                 </div>
@@ -195,6 +231,8 @@ export default function RegisterPage() {
                 </Button>
               </form>
 
+              {providerIds.includes("google") && (
+              <>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
@@ -233,6 +271,8 @@ export default function RegisterPage() {
                 </svg>
                 Registrovat se přes Google
               </Button>
+              </>
+              )}
             </>
           )}
         </CardContent>

@@ -1,6 +1,9 @@
+// @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from '@/app/api/upload/zip/route';
 import { NextRequest } from 'next/server';
+import { getServerSession } from 'next-auth';
+
 
 // Mock dependencies
 vi.mock('@/lib/prisma', () => ({
@@ -29,19 +32,28 @@ vi.mock('adm-zip', () => ({
   })),
 }));
 
-vi.mock('fs/promises', () => ({
-  writeFile: vi.fn(),
-  mkdir: vi.fn(),
-}));
-
-vi.mock('path', async () => {
-  const actual = await vi.importActual<typeof import('path')>('path');
+vi.mock('fs/promises', () => {
+  const mock = {
+    writeFile: vi.fn(),
+    mkdir: vi.fn(),
+  };
   return {
-    ...actual,
-    join: vi.fn().mockReturnValue('/test/path'),
-    extname: vi.fn().mockReturnValue('.jpg'),
+    ...mock,
+    default: mock,
   };
 });
+
+// Use real path.extname / basename / join so extension checks match real filenames (e.g. .txt vs .zip).
+vi.mock('path', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('path')>();
+  return { ...actual, default: actual };
+});
+
+vi.mock('next-auth', () => ({
+  getServerSession: vi.fn().mockResolvedValue({
+    user: { id: 'test-user-id' }
+  }),
+}));
 
 describe('Upload ZIP API', () => {
   beforeEach(() => {
@@ -58,13 +70,13 @@ describe('Upload ZIP API', () => {
     const response = await POST(request);
     expect(response.status).toBe(400);
     const data = await response.json();
-    expect(data.error).toBe('No file provided');
+    expect(data.error).toBe('No file uploaded or file is empty');
   });
 
   it('should return 400 if file is not a ZIP', async () => {
     const formData = new FormData();
-    const file = new File(['test'], 'test.txt', { type: 'text/plain' });
-    formData.append('file', file);
+    const file = new File([Buffer.from('test')], 'test.txt', { type: 'text/plain' });
+    formData.append('zipFile', file);
 
     const request = new NextRequest('http://localhost:3000/api/upload/zip', {
       method: 'POST',
@@ -74,18 +86,16 @@ describe('Upload ZIP API', () => {
     const response = await POST(request);
     expect(response.status).toBe(400);
     const data = await response.json();
-    expect(data.error).toBe('File must be a ZIP archive');
+    expect(data.error).toBe('Invalid file type');
   });
 
   it('should return 401 if user is not authenticated', async () => {
-    // Mock NextAuth to return null session
-    vi.mock('next-auth', () => ({
-      getServerSession: vi.fn().mockResolvedValue(null),
-    }));
+    // Override the mock to return null session for this test
+    vi.mocked(getServerSession).mockResolvedValueOnce(null);
 
     const formData = new FormData();
     const file = new File(['test'], 'test.zip', { type: 'application/zip' });
-    formData.append('file', file);
+    formData.append('zipFile', file);
 
     const request = new NextRequest('http://localhost:3000/api/upload/zip', {
       method: 'POST',
