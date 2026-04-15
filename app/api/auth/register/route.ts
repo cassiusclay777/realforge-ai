@@ -6,10 +6,11 @@ import { Prisma } from "@prisma/client"
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, email: rawEmail, password } = body
+    const { name, email: rawEmail, password: rawPassword } = body
     const email =
       typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : ""
     const displayName = typeof name === "string" ? name.trim() : ""
+    const password = typeof rawPassword === "string" ? rawPassword : ""
 
     if (!displayName || !email || !password) {
       return NextResponse.json(

@@ -23,7 +23,7 @@ export async function PATCH(
     if ("error" in auth) return auth.error;
 
     const body = await request.json().catch(() => ({}));
-    const aiCaption = typeof body.aiCaption === 'string' ? body.aiCaption.trim() : null;
+    const hasAiCaption = Object.prototype.hasOwnProperty.call(body, 'aiCaption');
 
     const media = await prisma.listingMedia.findFirst({
       where: { id: mediaId, listingId },
@@ -32,11 +32,32 @@ export async function PATCH(
       return NextResponse.json({ error: 'Médium nenalezeno.' }, { status: 404 });
     }
 
+    if (!hasAiCaption) {
+      return NextResponse.json(
+        { error: 'Pole aiCaption je povinné.' },
+        { status: 400 }
+      );
+    }
+
+    let nextCaption: string | null;
+    if (body.aiCaption === null) {
+      // Explicitní smazání popisku musí vymazat i altText.
+      nextCaption = null;
+    } else if (typeof body.aiCaption === 'string') {
+      const trimmed = body.aiCaption.trim();
+      nextCaption = trimmed.length > 0 ? trimmed : null;
+    } else {
+      return NextResponse.json(
+        { error: 'Pole aiCaption musí být text nebo null.' },
+        { status: 400 }
+      );
+    }
+
     await prisma.listingMedia.update({
       where: { id: mediaId },
       data: {
-        aiCaption: aiCaption ?? media.aiCaption,
-        altText: aiCaption ?? media.altText ?? media.aiCaption,
+        aiCaption: nextCaption,
+        altText: nextCaption,
       },
     });
 
