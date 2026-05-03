@@ -15,7 +15,10 @@ function titleFromFilename(name: string): string {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id ?? undefined;
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Nepřihlášen' }, { status: 401 });
+    }
+    const userId = session.user.id;
 
     const formData = await request.formData();
     const rawFiles = formData.getAll('zipFile');
@@ -57,7 +60,7 @@ export async function POST(request: NextRequest) {
             area: null,
             rooms: null,
             status: 'NEW',
-            createdById: userId ?? undefined,
+            createdById: userId,
           },
         });
         const bytes = await file.arrayBuffer();
@@ -85,9 +88,6 @@ export async function POST(request: NextRequest) {
             inferPropertyType: true,
           });
           jobId = job.id ?? undefined;
-          // #region agent log
-          fetch('http://127.0.0.1:7814/ingest/3261ec9b-bf07-4b9b-a0d3-3754008137eb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'831b70'},body:JSON.stringify({sessionId:'831b70',location:'upload/zip/route.ts:batch-job',message:'Batch job added with inferPropertyType',data:{listingId:listing.id,jobId:jobId??null,inferPropertyType:true},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
-          // #endregion
         } catch {
           queueOk = false;
         }
@@ -99,10 +99,11 @@ export async function POST(request: NextRequest) {
         batch: true,
         results,
         count: results.length,
+        processingQueued: queueOk,
         message: queueOk
           ? `Nahráno ${results.length} ZIPů. AI zpracovává obrázky (fronta, concurrency 2).`
-          : `Nahráno ${results.length} ZIPů. Spusť Redis a worker pro zpracování.`,
-      });
+          : `Nahráno ${results.length} ZIPů, ale fronta (Redis) není dostupná – zpracování nespuštěno. Spusť Redis a worker.`,
+      }, { status: queueOk ? 200 : 207 });
     }
 
     // Jeden soubor – původní chování s formulářem
@@ -152,7 +153,7 @@ export async function POST(request: NextRequest) {
         area: parsedArea ?? null,
         rooms: parsedRooms ?? null,
         status: 'NEW',
-        createdById: userId ?? undefined,
+        createdById: userId,
       },
     });
 

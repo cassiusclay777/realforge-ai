@@ -44,9 +44,9 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Please enter email and password")
         }
 
-        // Find user by email
+        // Find user by email (case-insensitive)
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string }
+          where: { email: credentials.email.toLowerCase().trim() }
         })
 
         if (!user) {
@@ -89,7 +89,6 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      allowDangerousEmailAccountLinking: true,
     }),
   ],
   callbacks: {

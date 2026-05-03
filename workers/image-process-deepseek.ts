@@ -9,7 +9,7 @@ const root = path.resolve(process.cwd());
 dotenv.config({ path: path.join(root, '.env') });
 dotenv.config({ path: path.join(root, '.env.local') });
 
-import Redis from 'ioredis';
+import Redis, { type Redis as IORedis } from 'ioredis';
 import AdmZip from 'adm-zip';
 import { Worker } from 'bullmq';
 import fs from 'fs';
@@ -226,13 +226,7 @@ const worker = new Worker(
       }
 
       const inferPropertyType = (job.data as { inferPropertyType?: boolean }).inferPropertyType;
-      // #region agent log
-      fetch('http://127.0.0.1:7814/ingest/3261ec9b-bf07-4b9b-a0d3-3754008137eb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'831b70'},body:JSON.stringify({sessionId:'831b70',location:'image-process-deepseek.ts:inferPropertyType',message:'Worker job.data inferPropertyType',data:{inferPropertyType:!!inferPropertyType,hasAnalyzer:!!analyzer,listingId},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-      // #endregion
       if (inferPropertyType && analyzer) {
-        // #region agent log
-        fetch('http://127.0.0.1:7814/ingest/3261ec9b-bf07-4b9b-a0d3-3754008137eb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'831b70'},body:JSON.stringify({sessionId:'831b70',location:'image-process-deepseek.ts:classification-block',message:'Entering classification block',data:{listingId,firstImageEntry:imageEntries[0]?.entryName},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-        // #endregion
         const firstEntry = imageEntries[0];
         const ext = path.extname(firstEntry.entryName).toLowerCase() || '.jpg';
         const classifyName = `_classify${ext}`;
@@ -241,9 +235,6 @@ const worker = new Worker(
         try {
           console.log('🏠 AI klasifikace nemovitosti z první fotky...');
           const classification = await analyzer.classifyProperty(classifyPath);
-          // #region agent log
-          fetch('http://127.0.0.1:7814/ingest/3261ec9b-bf07-4b9b-a0d3-3754008137eb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'831b70'},body:JSON.stringify({sessionId:'831b70',location:'image-process-deepseek.ts:after-classify',message:'Classification result',data:{type:classification.type,title:classification.title,price:classification.price,listingId},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-          // #endregion
           await prisma.listing.update({
             where: { id: listingId },
             data: {
@@ -252,9 +243,6 @@ const worker = new Worker(
               ...(classification.price > 0 && { price: classification.price }),
             },
           });
-          // #region agent log
-          fetch('http://127.0.0.1:7814/ingest/3261ec9b-bf07-4b9b-a0d3-3754008137eb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'831b70'},body:JSON.stringify({sessionId:'831b70',location:'image-process-deepseek.ts:listing-updated',message:'Listing updated with classification',data:{listingId},timestamp:Date.now(),hypothesisId:'H5'})}).catch(()=>{});
-          // #endregion
           console.log(`   → typ: ${classification.type}, název: ${classification.title}${classification.price > 0 ? `, cena: ${classification.price} Kč` : ''}`);
         } catch (err) {
           console.warn('⚠ Klasifikace nemovitosti selhala, zůstávají výchozí údaje:', err);
@@ -448,7 +436,7 @@ const worker = new Worker(
     }
   },
   {
-    connection: redis as any,
+    connection: redis as unknown as IORedis,
     concurrency: 2,
     removeOnComplete: { count: 100 },
     removeOnFail: { count: 100 }

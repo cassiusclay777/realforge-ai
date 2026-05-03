@@ -25,6 +25,12 @@ export async function publishToSreality(jobData: ExportJobData): Promise<ExportR
       include: {
         createdBy: true,
         aiResult: true,
+        media: {
+          where: { isHidden: false },
+          orderBy: [{ isFeatured: 'desc' }, { sortOrder: 'asc' }],
+          take: 12,
+          select: { url: true, aiCaption: true, altText: true, isFeatured: true },
+        },
       },
     });
 
@@ -62,46 +68,52 @@ export async function publishToSreality(jobData: ExportJobData): Promise<ExportR
       };
     }
 
-    // Prepare payload for Sreality API
-    // Convert images from JSON string/array to array of URLs
-    const images = listing.images ? 
-      (Array.isArray(listing.images) ? listing.images : JSON.parse(listing.images as string)) : 
-      [];
-    
+    // Build base URL for absolute image links
+    const appBaseUrl = (process.env.NEXTAUTH_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+
+    // Prefer processed media from vision pipeline; fall back to legacy images JSON
+    const mediaImages = listing.media.length > 0
+      ? listing.media.map((m, i) => ({
+          url: m.url.startsWith('http') ? m.url : `${appBaseUrl}${m.url}`,
+          order: i,
+          is_main: i === 0 || m.isFeatured,
+          alt: m.altText ?? m.aiCaption ?? undefined,
+        }))
+      : (() => {
+          const raw = listing.images;
+          const urls: string[] = Array.isArray(raw) ? (raw as string[]) : (typeof raw === 'string' ? JSON.parse(raw || '[]') : []);
+          return urls.slice(0, 12).map((url: string, i: number) => ({
+            url: url.startsWith('http') ? url : `${appBaseUrl}${url}`,
+            order: i,
+            is_main: i === 0,
+          }));
+        })();
+
     const payload = {
-      // Basic listing info
       title: aiResults?.headline || listing.title,
-      description: aiResults?.shortDesc || `Property at ${listing.address}`,
+      description: aiResults?.longDesc || aiResults?.shortDesc || `Nemovitost na adrese ${listing.address}`,
       price: listing.price,
       currency: "CZK",
-      
-      // Property details
+
       property_type: mapPropertyType(listing.type),
       disposition: listing.rooms ? `${listing.rooms}+1` : undefined,
       area: listing.area || undefined,
-      floor: undefined, // Not in PostgreSQL schema
-      construction_year: undefined, // Not in PostgreSQL schema
-      
-      // Location
+
       address: listing.address,
       city: extractCity(listing.address),
       district: extractDistrict(listing.address),
-      
-      // Images - use first 12 images
-      images: images.slice(0, 12).map((url: string, index: number) => ({
-        url,
-        order: index,
-        is_main: index === 0,
-      })),
-      
-      // Contact info - use default values
+
+      images: mediaImages,
+
       contact: {
-        name: "Real Estate Agent",
-        email: "info@realforge.ai",
-        phone: "+420 123 456 789",
+        name: listing.createdBy?.name ?? "Realitní makléř",
+        email: listing.createdBy?.email ?? process.env.DEFAULT_AGENT_EMAIL ?? "info@realforge.ai",
+        phone: listing.createdBy?.phone ?? process.env.DEFAULT_AGENT_PHONE ?? "",
       },
-      
-      // Metadata
+
+      seo_title: aiResults?.seoTitle ?? undefined,
+      seo_description: aiResults?.seoDescription ?? undefined,
+
       source: "REALFORGE_AI",
       source_id: listingId,
       created_at: listing.createdAt.toISOString(),
@@ -174,11 +186,15 @@ export async function publishToSreality(jobData: ExportJobData): Promise<ExportR
 // Helper functions
 function mapPropertyType(type: string): string {
   const mapping: Record<string, string> = {
+    APARTMENT: "flat",
+    HOUSE: "house",
+    LAND: "land",
+    // Czech aliases just in case
     BYT: "flat",
     DUM: "house",
     POZEMEK: "land",
   };
-  return mapping[type] || "other";
+  return mapping[type.toUpperCase()] ?? "other";
 }
 
 function extractCity(address: string): string {

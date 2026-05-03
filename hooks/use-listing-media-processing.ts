@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export type MediaProcessingStatus = 'IDLE' | 'QUEUED' | 'PROCESSING' | 'DONE' | 'FAILED' | 'PARTIAL';
 
@@ -54,9 +54,21 @@ export function useListingMediaProcessing(
   const [error, setError] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
 
+  // Refs to avoid stale closures in callbacks and track backoff state
+  const stateRef = useRef<MediaProcessingState | null>(null);
+  const onStatusChangeRef = useRef(onStatusChange);
+  const onProgressChangeRef = useRef(onProgressChange);
+  const consecutiveErrorsRef = useRef(0);
+  const isPollingRef = useRef(false);
+
+  useEffect(() => { onStatusChangeRef.current = onStatusChange; }, [onStatusChange]);
+  useEffect(() => { onProgressChangeRef.current = onProgressChange; }, [onProgressChange]);
+  useEffect(() => { isPollingRef.current = isPolling; }, [isPolling]);
+
   const fetchMediaStatus = useCallback(async () => {
     if (!listingId) {
       setState(null);
+      stateRef.current = null;
       return;
     }
 
@@ -65,27 +77,30 @@ export function useListingMediaProcessing(
 
     try {
       const response = await fetch(`/api/listings/${listingId}/media-status`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch media status: ${response.statusText}`);
       }
 
       const result = await response.json();
-      
+
       if (!result.success) {
         throw new Error(result.message || 'Failed to fetch media status');
       }
 
       const newState = result.data;
-      setState(newState);
+      const prevState = stateRef.current;
 
-      // Call callbacks if status or progress changed
-      if (state?.overallStatus !== newState.overallStatus) {
-        onStatusChange?.(newState.overallStatus);
+      setState(newState);
+      stateRef.current = newState;
+      consecutiveErrorsRef.current = 0;
+
+      // Call callbacks only when values actually changed
+      if (prevState?.overallStatus !== newState.overallStatus) {
+        onStatusChangeRef.current?.(newState.overallStatus);
       }
-      
-      if (state?.progress !== newState.progress) {
-        onProgressChange?.(newState.progress);
+      if (prevState?.progress !== newState.progress) {
+        onProgressChangeRef.current?.(newState.progress);
       }
 
       // Auto-stop polling if processing is done or failed
@@ -94,12 +109,13 @@ export function useListingMediaProcessing(
       }
 
     } catch (err) {
+      consecutiveErrorsRef.current++;
       setError(err instanceof Error ? err.message : 'Unknown error');
       console.error('Error fetching media status:', err);
     } finally {
       setIsLoading(false);
     }
-  }, [listingId, state, onStatusChange, onProgressChange]);
+  }, [listingId]); // listingId is the only real dependency
 
   // Start/stop polling based on enabled flag and processing state
   useEffect(() => {
@@ -127,17 +143,27 @@ export function useListingMediaProcessing(
     }
   }, [listingId, enabled, state, fetchMediaStatus]);
 
-  // Polling effect
+  // Polling effect with exponential backoff on repeated errors
   useEffect(() => {
     if (!isPolling) return;
 
-    const intervalId = setInterval(fetchMediaStatus, pollingInterval);
-    
-    // Initial fetch
-    fetchMediaStatus();
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let cancelled = false;
+
+    const poll = async () => {
+      if (cancelled) return;
+      await fetchMediaStatus();
+      if (cancelled || !isPollingRef.current) return;
+      const errors = consecutiveErrorsRef.current;
+      const interval = errors >= 20 ? 30_000 : errors >= 10 ? 10_000 : pollingInterval;
+      timeoutId = setTimeout(poll, interval);
+    };
+
+    poll();
 
     return () => {
-      clearInterval(intervalId);
+      cancelled = true;
+      clearTimeout(timeoutId);
     };
   }, [isPolling, pollingInterval, fetchMediaStatus]);
 

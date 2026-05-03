@@ -1,11 +1,11 @@
-// MVP: simulace BullMQ queue pro image processing
 import { Queue, Worker } from 'bullmq';
+import type { Redis as IORedis } from 'ioredis';
 import { redis } from './redis';
 
 // Workaround pro konflikt typů mezi ioredis a bullmq
 // Použijeme type assertion, protože obě knihovny mají kompatibilní API
 export const imageProcessQueue = new Queue('image-process', {
-  connection: redis as any,
+  connection: redis as unknown as IORedis,
   defaultJobOptions: {
     attempts: 3,
     backoff: {
@@ -16,7 +16,7 @@ export const imageProcessQueue = new Queue('image-process', {
 });
 
 export const imageProcessDeepSeekQueue = new Queue('image-process-deepseek', {
-  connection: redis as any,
+  connection: redis as unknown as IORedis,
   defaultJobOptions: {
     attempts: 3,
     backoff: {
@@ -42,7 +42,7 @@ export function getQueue(queueName: string) {
           worker.close();
         }
         worker = new Worker(queueName, handler, {
-          connection: redis as any,
+          connection: redis as unknown as IORedis,
           concurrency: 5,
         });
         
@@ -68,7 +68,7 @@ export function getQueue(queueName: string) {
           deepseekWorker.close();
         }
         deepseekWorker = new Worker(queueName, handler, {
-          connection: redis as any,
+          connection: redis as unknown as IORedis,
           concurrency: 2, // Nižší concurrency kvůli API limitům
         });
         

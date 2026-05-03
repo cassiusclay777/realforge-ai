@@ -120,9 +120,6 @@ export class VisionAnalyzer {
       const type = this.normalizeListingType(raw.type);
       const title = String(raw.title ?? '').trim().slice(0, 200) || 'Nemovitost';
       const price = Math.max(0, Number(raw.price) || 0);
-      // #region agent log
-      fetch('http://127.0.0.1:7814/ingest/3261ec9b-bf07-4b9b-a0d3-3754008137eb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'831b70'},body:JSON.stringify({sessionId:'831b70',location:'vision-analyzer.ts:classifyProperty',message:'classifyProperty result',data:{type,title,price},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-      // #endregion
       return { type, title, price };
     } catch (error) {
       console.error('Chyba při klasifikaci nemovitosti:', error);

@@ -67,11 +67,14 @@ export async function POST(
     let generated = 0;
     const chunks = chunk(mediaWithoutCaption, CONCURRENCY);
 
+    const uploadsBase = path.resolve(process.cwd(), 'public', 'uploads');
+
     for (const batch of chunks) {
       await Promise.all(
         batch.map(async (media) => {
-          const urlPath = media.url.startsWith('/') ? media.url : `/${media.url}`;
-          const fullPath = path.join(process.cwd(), 'public', urlPath);
+          const urlPath = media.url.startsWith('/') ? media.url.slice(1) : media.url;
+          const fullPath = path.resolve(process.cwd(), 'public', urlPath);
+          if (!fullPath.startsWith(uploadsBase)) return;
 
           try {
             const caption = await generatePhotoCaption(fullPath, {
