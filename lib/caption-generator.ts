@@ -68,7 +68,7 @@ export async function generatePhotoCaption(
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const body = {
-        model: 'deepseek-chat',
+        model: process.env.DEEPSEEK_MODEL ?? 'deepseek-chat',
         messages: [
           {
             role: 'user' as const,

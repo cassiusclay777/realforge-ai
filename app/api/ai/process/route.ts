@@ -28,7 +28,7 @@ function mapMediaToAnalyses(media: ListingMedia[]): DeepSeekImageAnalysis[] {
 }
 
 async function processWithAI(
-  metadata: { title?: string; address?: string; type?: string; price?: number | null; area?: number | null; rooms?: number | null },
+  metadata: { title?: string; address?: string; type?: string; price?: number | null; area?: number | null; rooms?: number | null; userDescription?: string },
   existingAnalyses: DeepSeekImageAnalysis[],
   fallbackImageUrls: string[],
   apiKey?: string | null
@@ -84,6 +84,7 @@ async function processWithAI(
     price: metadata.price ?? undefined,
     area: metadata.area ?? undefined,
     rooms: metadata.rooms ?? undefined,
+    userDescription: metadata.userDescription,
   }, apiKey ? { apiKey } : undefined);
 
   return {
@@ -142,6 +143,7 @@ export async function POST(request: NextRequest) {
       price: parsePositiveInt(price) ?? listing.price ?? null,
       area: parsePositiveInt(area) ?? listing.area ?? null,
       rooms: parsePositiveInt(rooms) ?? listing.rooms ?? null,
+      userDescription: listing.description ?? undefined,
     };
 
     const existingAnalyses = mapMediaToAnalyses(listing.media);

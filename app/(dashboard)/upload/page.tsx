@@ -101,6 +101,7 @@ export default function UploadPage() {
     type: "BYT",
     price: "",
     area: "",
+    description: "",
   });
   
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -130,7 +131,7 @@ export default function UploadPage() {
     setSelectedFiles(filterZipFiles(e.dataTransfer.files));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -200,6 +201,10 @@ export default function UploadPage() {
       submitFormData.append("type", formData.type);
       submitFormData.append("price", formData.price);
       if (formData.area) submitFormData.append("area", formData.area);
+      if (formData.description) submitFormData.append("description", formData.description);
+    } else {
+      // V batch módu předej obecný popis pro všechny listingy
+      if (formData.description) submitFormData.append("description", formData.description);
     }
 
     setUploadState("uploading");
@@ -272,6 +277,22 @@ export default function UploadPage() {
               Pro každý ZIP vytvoříme listing. AI z první fotky doplní <strong>typ nemovitosti</strong> (byt/dům/pozemek), <strong>název</strong> a případně odhad ceny. Výchozí název je z názvu souboru. Adresu a přesnou cenu lze doplnit později v detailu listingu.
             </p>
           </div>
+
+          <div className="space-y-2">
+            <label htmlFor="description-batch" className="text-sm font-medium">
+              Obecný kontext pro AI <span className="text-muted-foreground font-normal">(volitelné – platí pro všechny nahrané listingy)</span>
+            </label>
+            <textarea
+              id="description-batch"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={2}
+              placeholder="Např.: Vše jsou byty v Brně, roky výstavby 1980–2000, převážně po rekonstrukci..."
+              className="w-full border border-input bg-background px-3 py-2 rounded-md text-sm resize-none"
+            />
+          </div>
+
           <Button
             type="submit"
             disabled={isPending || !isFormValid}
@@ -370,6 +391,24 @@ export default function UploadPage() {
                 className="w-full border border-input bg-background px-3 py-2 rounded-md"
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="description" className="text-sm font-medium">
+              Váš stručný popis <span className="text-muted-foreground font-normal">(volitelné – AI ho použije pro generování textu)</span>
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={3}
+              placeholder="Např.: Renovovaný byt 3+kk v Brně-Žabovřeskách, nová koupelna 2023, velký balkon orientovaný na jih, sklep, garážové stání v domě, klidná ulice..."
+              className="w-full border border-input bg-background px-3 py-2 rounded-md text-sm resize-none"
+            />
+            <p className="text-xs text-muted-foreground">
+              Napište co víte o nemovitosti – AI přemění váš popis na profesionální inzerát a použije ho jako kontext při analýze fotek.
+            </p>
           </div>
 
           <Button

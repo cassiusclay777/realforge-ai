@@ -1,0 +1,4 @@
+Jsme na větvi feat/property-enrichment (commit 6bb1721). Spusť smoke test
+enrichmentu na reálné adrese 'Pražská 12, Znojmo' přes 
+lib/property-enrichment/index.ts a ukaž mi co vrátil. Pokud Google APIs
+zafungovaly, pokračujme úkolem #1 z roadmapy — endpoint /api/enrichment/from-address.

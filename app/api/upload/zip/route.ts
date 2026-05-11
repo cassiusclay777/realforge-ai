@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     const userId = session.user.id;
 
     const formData = await request.formData();
+    const userDescription = (formData.get('description') as string | null)?.trim() || null;
     const rawFiles = formData.getAll('zipFile');
     const files = (Array.isArray(rawFiles) ? rawFiles : [rawFiles]).filter(
       (f): f is File => f instanceof File && f.size > 0
@@ -60,6 +61,7 @@ export async function POST(request: NextRequest) {
             area: null,
             rooms: null,
             status: 'NEW',
+            description: userDescription,
             createdById: userId,
           },
         });
@@ -153,6 +155,7 @@ export async function POST(request: NextRequest) {
         area: parsedArea ?? null,
         rooms: parsedRooms ?? null,
         status: 'NEW',
+        description: userDescription,
         createdById: userId,
       },
     });

@@ -195,7 +195,7 @@ const worker = new Worker(
       fs.mkdirSync(extractDir, { recursive: true });
       
       // Filtrujeme pouze obrázkové soubory
-      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
+      const imageExtensions = ['.jpg', '.jpeg', '.jpe', '.jfif', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.avif', '.heic', '.heif'];
       const zipEntries = zip.getEntries();
       const imageEntries = zipEntries.filter(entry => {
         const ext = path.extname(entry.entryName).toLowerCase();

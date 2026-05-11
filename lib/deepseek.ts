@@ -150,6 +150,7 @@ export async function generateContentWithDeepSeek(
     price?: number;
     area?: number;
     rooms?: number;
+    userDescription?: string;
   },
   options?: { apiKey?: string | null }
 ): Promise<DeepSeekContentGeneration> {
@@ -166,6 +167,10 @@ export async function generateContentWithDeepSeek(
     ? imageAnalyses.map((a, i) => `Foto ${i + 1}: ${a.description}${a.tags?.length ? ` [${a.tags.join(', ')}]` : ''}`).join('\n')
     : 'Fotografie nejsou k dispozici.';
 
+  const userDescSection = propertyDetails.userDescription
+    ? `\nPOPIS OD MAKLÉŘE (priority – toto jsou ověřené informace, zahrň je do textu):\n"${propertyDetails.userDescription}"\n`
+    : '';
+
   const systemPrompt = `Jsi zkušený copywriter specialista na český realitní trh. Píšeš texty pro portály Sreality.cz, Bezrealitky.cz a sociální sítě. Tvůj styl je profesionální, konkrétní a přesvědčivý – žádné prázdné fráze. Každý text musí být unikátní a odpovídat skutečným parametrům nemovitosti.`;
 
   const userPrompt = `Vygeneruj kompletní marketingový obsah pro tuto nemovitost:
@@ -178,6 +183,7 @@ PARAMETRY:
 - Plocha: ${propertyDetails.area ? `${propertyDetails.area} m²` : 'neuvedena'}
 - Počet pokojů: ${propertyDetails.rooms ?? 'neuvedeno'}
 
+${userDescSection}
 ANALÝZA FOTOGRAFIÍ:
 ${photoSummary}
 

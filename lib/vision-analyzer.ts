@@ -144,7 +144,7 @@ export class VisionAnalyzer {
 
     // Oficiální DeepSeek API: POST /v1/chat/completions (OpenAI-kompatibilní), obrázek v content jako image_url
     const body = {
-      model: 'deepseek-chat',
+      model: process.env.DEEPSEEK_MODEL ?? 'deepseek-chat',
       messages: [
         {
           role: 'system' as const,

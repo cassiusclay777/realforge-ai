@@ -55,7 +55,12 @@
 - ✅ Commit `d478a89 feat: wire Sreality + Poski publish handlers to UI buttons` na větvi `feat/publish-buttons` (NEMÉRGOVAT — strategicky odmítnuto)
 
 ### V tuto chvíli běží na pozadí
-- 🟡 **Subagent staví `lib/property-enrichment/` modul** — RUIAN/Mapy.cz odložen, jdeme rovnou s Google APIs (máme klíč). Modul: `geocode.ts`, `static-map.ts`, `street-view.ts`, `nearby.ts`, `index.ts`, `types.ts` + 3 test soubory. Done definition: všechno typecheck + testy projdou.
+- ✅ **Subagent dokončil `lib/property-enrichment/` modul** (commit `6bb1721` na větvi `feat/property-enrichment`)
+  - 7 source files: `types.ts`, `google-client.ts`, `geocode.ts`, `static-map.ts`, `street-view.ts`, `nearby.ts`, `index.ts`
+  - 3 test files: 13/13 testů prošlo (žádná real Google volání)
+  - TypeScript clean
+  - Orchestrator `enrichFromAddress(address)` — geocode hard-fails, ostatní fail-soft přes Promise.allSettled
+  - **Ještě NETESTOVÁNO s reálnými Google API** — to udělej zítra jako první (viz níže)
 
 ---
 
@@ -81,11 +86,11 @@
 
 ## 🌅 Jak začít zítra ráno (literal copy-paste prompty)
 
-### Pokud subagent dokončil enrichment modul:
-> **„Zkontroluj výsledek subagenta na property-enrichment modulu. Pokud OK, commitni na novou větev `feat/property-enrichment` a pojďme stavět endpoint `/api/enrichment/from-address` (úkol #1 z roadmapy)."**
+### 🟢 Doporučený první krok ráno (smoke test enrichmentu):
+> **„Jsme na větvi `feat/property-enrichment` (commit `6bb1721`). Spusť smoke test enrichmentu na reálné adrese 'Pražská 12, Znojmo' přes lib/property-enrichment/index.ts a ukaž mi co vrátil. Pokud Google APIs zafungovaly, pokračujme úkolem #1 z roadmapy — endpoint `/api/enrichment/from-address`."**
 
-### Pokud subagent ještě běží:
-> **„Jak je na tom subagent na property-enrichment? Pokud má status BLOCKED nebo NEEDS_CONTEXT, vyřeš to."**
+### Pokud chceš rovnou stavět endpoint (přeskočit smoke test):
+> **„Spusť subagent na úkol #1 z roadmapy: postav `app/api/enrichment/from-address/route.ts` který volá enrichFromAddress() z lib/property-enrichment/. POST endpoint, auth required, ratelimit. Vrať EnrichmentResult."**
 
 ### Pokud chceš začít úplně jinou featurou:
 > **„Otevři roadmapu v `realforge-ai/docs/plans/2026-05-11-jitka-v0-roadmap.md` a pojďme dělat úkol #X."** (kde X = číslo z tabulky výše)
