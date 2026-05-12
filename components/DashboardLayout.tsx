@@ -71,9 +71,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </header>
 
-      <div className="flex flex-row min-h-screen w-full pt-14">
-        {/* Spacer so main content does not sit under the fixed sidebar */}
-        <div className={cn("flex-shrink-0 transition-[width] duration-200", sidebarCollapsed ? "w-16" : "w-56")} aria-hidden />
+      <div className="min-h-screen w-full pt-14">
         <aside className={cn(
           "fixed left-0 top-14 bottom-0 border-r border-border bg-card/50 transition-all duration-200 z-40",
           sidebarCollapsed ? "w-16" : "w-56"
@@ -170,8 +168,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </aside>
 
-        {/* Main: z-0 so fixed sidebar (z-40) always layers above */}
-        <main className="flex-1 min-w-0 overflow-auto relative z-0" suppressHydrationWarning>
+        {/* Main: z-0 so fixed sidebar (z-40) always layers above; padding-left makes room for fixed sidebar */}
+        <main
+          className={cn(
+            "min-w-0 overflow-auto relative z-0 transition-[padding-left] duration-200",
+            sidebarCollapsed ? "pl-16" : "pl-56"
+          )}
+          suppressHydrationWarning
+        >
           <div className="w-full px-4 md:px-6 py-6 md:py-8" suppressHydrationWarning>
             {children}
           </div>
