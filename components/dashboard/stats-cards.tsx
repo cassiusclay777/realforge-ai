@@ -1,15 +1,15 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Home, 
-  Users, 
-  TrendingUp, 
-  DollarSign, 
-  Eye, 
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Home,
+  Users,
+  TrendingUp,
+  DollarSign,
+  Eye,
   MessageSquare,
   Clock,
-  CheckCircle
+  CheckCircle,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -23,37 +23,42 @@ interface StatsCardProps {
 }
 
 const StatsCard = ({ title, value, icon, description, trend, loading }: StatsCardProps) => {
+  const trendClasses = trend === undefined
+    ? ""
+    : trend > 0
+      ? "bg-emerald-100 text-emerald-900 dark:bg-emerald-900 dark:text-emerald-200"
+      : "bg-rose-100 text-rose-900 dark:bg-rose-900 dark:text-rose-200";
+
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
+    <Card className="overflow-hidden border border-border/70 bg-card/95 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+      <CardContent className="space-y-4 p-5">
+        <div className="flex items-start justify-between gap-4">
           <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
               {title}
             </p>
             {loading ? (
-              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-10 w-28" />
             ) : (
-              <p className="text-3xl font-bold text-foreground">{value ?? "—"}</p>
-            )}
-            <div className="flex items-center gap-2">
-              <p className="text-xs text-muted-foreground">
-                {description}
+              <p className="text-3xl font-semibold tracking-tight text-foreground">
+                {value ?? "—"}
               </p>
-              {trend !== undefined && (
-                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                  trend > 0 
-                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-                }`}>
-                  {trend > 0 ? "↑" : "↓"} {Math.abs(trend)}%
-                </span>
-              )}
-            </div>
+            )}
           </div>
-          <div className="p-3 rounded-full bg-primary/10 text-primary">
+          <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-sm shadow-primary/10">
             {icon}
           </div>
+        </div>
+
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            {description}
+          </p>
+          {trend !== undefined && (
+            <span className={`text-xs font-semibold uppercase tracking-[0.18em] rounded-full px-3 py-1 ${trendClasses}`}>
+              {trend > 0 ? "+" : ""}{trend}%
+            </span>
+          )}
         </div>
       </CardContent>
     </Card>
