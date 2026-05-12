@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { generatePhotoCaption } from '@/lib/caption-generator';
+import { getDeepSeekApiKey } from '@/lib/integration-utils';
 import path from 'path';
 
 const CONCURRENCY = 5;
@@ -56,11 +57,11 @@ export async function POST(
       });
     }
 
-    const apiKey = process.env.DEEPSEEK_API_KEY;
+    const apiKey = await getDeepSeekApiKey(session.user.id);
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'DEEPSEEK_API_KEY není nastaven.' },
-        { status: 500 }
+        { error: 'DeepSeek API klíč není nakonfigurován. Nastavte ho v Nastavení > Integrace.' },
+        { status: 400 }
       );
     }
 

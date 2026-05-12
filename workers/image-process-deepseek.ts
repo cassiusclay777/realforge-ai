@@ -338,7 +338,7 @@ const worker = new Worker(
           let altToStore: string | null = analysis.suggestedCaption ?? null;
           try {
             const shortCaption = await generatePhotoCaption(fullPath, {
-              apiKey: process.env.DEEPSEEK_API_KEY ?? undefined,
+              apiKey: apiKey ?? undefined,
               maxRetries: 2,
             });
             if (shortCaption) {
