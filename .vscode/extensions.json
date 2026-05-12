@@ -2,6 +2,7 @@
     "recommendations": [
         "colourafredi.vscode-deepseek",
         "saoudrizwan.claude-dev",
-        "continue.continue"
+        "continue.continue",
+        "juanlb.claude-commit"
     ]
 }
