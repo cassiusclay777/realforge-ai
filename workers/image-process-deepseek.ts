@@ -454,11 +454,19 @@ worker.on('failed', (job, err) => {
 worker.on('error', (err: Error & { code?: string }) => {
   const isRedisDown =
     err?.code === 'ECONNREFUSED' ||
-    (err as Error).message?.includes('ECONNREFUSED') ||
-    (err as Error).name === 'AggregateError';
+    err.message?.includes('ECONNREFUSED') ||
+    err.name === 'AggregateError';
   if (isRedisDown) {
     logRedisUnavailable();
     process.exit(0);
+  }
+  if (err.message?.includes('Redis version')) {
+    console.error('');
+    console.error('❌ ' + err.message);
+    console.error('   BullMQ requires Redis >= 5.0.0.');
+    console.error('   Stop any local Redis on port 6379, then run: docker-compose up -d redis');
+    console.error('');
+    process.exit(1);
   }
   console.error('🔥 Worker error:', err);
 });
