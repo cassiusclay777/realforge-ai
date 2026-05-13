@@ -107,30 +107,30 @@ export default async function DashboardPage() {
     {
       title: "Nahrát nový inzerát",
       description: "Začněte s novým AI inzerátem",
-      icon: <Upload className="h-6 w-6" />,
+      icon: <Upload className="h-5 w-5" />,
       href: "/upload",
-      color: "bg-blue-100 text-blue-700",
+      color: "bg-blue-500/15 text-blue-400",
     },
     {
-      title: "Zobrazit všechny inzeráty",
+      title: "Všechny inzeráty",
       description: "Přehled všech vašich inzerátů",
-      icon: <Home className="h-6 w-6" />,
+      icon: <Home className="h-5 w-5" />,
       href: "/listings",
-      color: "bg-green-100 text-green-700",
+      color: "bg-primary/15 text-primary",
     },
     {
-      title: "CRM - Zájemci",
+      title: "CRM – Zájemci",
       description: "Spravujte své zájemce",
-      icon: <Users className="h-6 w-6" />,
+      icon: <Users className="h-5 w-5" />,
       href: "/crm",
-      color: "bg-orange-100 text-orange-700",
+      color: "bg-orange-500/15 text-orange-400",
     },
     {
       title: "Nastavení účtu",
       description: "Upravte si profil a nastavení",
-      icon: <Settings className="h-6 w-6" />,
+      icon: <Settings className="h-5 w-5" />,
       href: "/settings",
-      color: "bg-gray-100 text-gray-700",
+      color: "bg-secondary text-muted-foreground",
     },
   ];
 
@@ -149,11 +149,11 @@ export default async function DashboardPage() {
         
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="search"
               placeholder="Hledat inzeráty, zájemce..."
-              className="pl-10 pr-4 py-2 border rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="pl-9 pr-4 py-2 bg-card border border-border rounded-lg w-full md:w-64 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors"
             />
           </div>
           <Link href="/listings">
@@ -210,7 +210,7 @@ export default async function DashboardPage() {
             CRM & Live Chat
           </h2>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="bg-green-50 text-green-700">
+            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
               <MessageSquare className="h-3 w-3 mr-1" />
               3 nové zprávy
             </Badge>
@@ -284,7 +284,7 @@ export default async function DashboardPage() {
                         {listing.area} m² • {listing.rooms} pokojů
                       </p>
                       {listing.aiResult && (
-                        <Badge variant="outline" className="bg-green-50 text-green-700">
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-xs">
                           AI ✓
                         </Badge>
                       )}
@@ -316,41 +316,41 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-3 bg-blue-50 rounded-lg">
+                <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-blue-800">Luxusní byt Praha 1</p>
-                      <p className="text-sm text-blue-600">Aktuální: 12.5M Kč</p>
+                      <p className="font-medium text-foreground">Luxusní byt Praha 1</p>
+                      <p className="text-sm text-muted-foreground">Aktuální: 12.5M Kč</p>
                     </div>
-                    <Badge className="bg-blue-100 text-blue-800">
+                    <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
                       +8.5%
                     </Badge>
                   </div>
                   <div className="mt-2">
-                    <p className="text-sm font-medium text-blue-800">
-                      AI doporučení: <span className="text-lg">13.6M Kč</span>
+                    <p className="text-sm font-medium text-foreground">
+                      AI doporučení: <span className="text-lg text-blue-400">13.6M Kč</span>
                     </p>
-                    <p className="text-xs text-blue-600 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Na základě 42 podobných prodejů
                     </p>
                   </div>
                 </div>
 
-                <div className="p-3 bg-green-50 rounded-lg">
+                <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-green-800">Rodinný dům Brno</p>
-                      <p className="text-sm text-green-600">Aktuální: 8.5M Kč</p>
+                      <p className="font-medium text-foreground">Rodinný dům Brno</p>
+                      <p className="text-sm text-muted-foreground">Aktuální: 8.5M Kč</p>
                     </div>
-                    <Badge className="bg-green-100 text-green-800">
+                    <Badge className="bg-primary/20 text-primary border-primary/30">
                       +12.3%
                     </Badge>
                   </div>
                   <div className="mt-2">
-                    <p className="text-sm font-medium text-green-800">
-                      AI doporučení: <span className="text-lg">9.5M Kč</span>
+                    <p className="text-sm font-medium text-foreground">
+                      AI doporučení: <span className="text-lg text-primary">9.5M Kč</span>
                     </p>
-                    <p className="text-xs text-green-600 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Tržní poptávka +15%
                     </p>
                   </div>
@@ -392,29 +392,6 @@ export default async function DashboardPage() {
                 ))}
               </div>
               
-              {/* Dark Mode Toggle */}
-              <div className="mt-6 pt-6 border-t">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gray-100 rounded-lg dark:bg-gray-800">
-                      <div className="h-5 w-5 bg-gray-300 rounded-full dark:bg-gray-600"></div>
-                    </div>
-                    <div>
-                      <p className="font-medium">Dark Mode</p>
-                      <p className="text-sm text-muted-foreground">Automaticky podle systému</p>
-                    </div>
-                  </div>
-                  <div className="relative inline-block w-12 h-6">
-                    <input type="checkbox" className="sr-only" id="dark-mode-toggle" />
-                    <label 
-                      htmlFor="dark-mode-toggle" 
-                      className="block w-12 h-6 rounded-full bg-gray-300 cursor-pointer dark:bg-gray-700"
-                    >
-                      <div className="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div>
-                    </label>
-                  </div>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>

@@ -169,13 +169,13 @@ export default async function ListingsPage() {
                     <span className="text-muted-foreground">AI text (popis, SEO):</span>
                     <span>
                       {listing.aiResult ? (
-                        <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
                           Hotovo
                         </Badge>
                       ) : (
                         <Link href={`/listings/${listing.id}`} prefetch={false}>
-                          <Badge variant="outline" className="bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/50 cursor-pointer">
-                            Spustit v detailu →
+                          <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20 cursor-pointer transition-colors">
+                            Spustit →
                           </Badge>
                         </Link>
                       )}

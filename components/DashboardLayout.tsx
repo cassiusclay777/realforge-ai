@@ -31,31 +31,31 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
 
   const workspaceItems = [
-    { label: "Dashboard", icon: Home, href: "/dashboard" },
-    { label: "Listings", icon: Building2, href: "/listings" },
+    { label: "Přehled", icon: Home, href: "/dashboard" },
+    { label: "Inzeráty", icon: Building2, href: "/listings" },
     { label: "Nahrát ZIP", icon: Upload, href: "/upload" },
     { label: "CRM", icon: Users, href: "/crm" },
-    { label: "Media", icon: Image, href: "/media" },
-    { label: "Analytics", icon: BarChart, href: "/analytics" },
+    { label: "Média", icon: Image, href: "/media" },
+    { label: "Analytika", icon: BarChart, href: "/analytics" },
   ];
 
   const operationsItems = [
-    { label: "Automations", icon: Zap, href: "/automations" },
-    { label: "Integrations", icon: Globe, href: "/integrations" },
-    { label: "Settings", icon: Settings, href: "/settings" },
+    { label: "Automatizace", icon: Zap, href: "/automations" },
+    { label: "Integrace", icon: Globe, href: "/integrations" },
+    { label: "Nastavení", icon: Settings, href: "/settings" },
   ];
 
   return (
     <div className="min-h-screen bg-background" suppressHydrationWarning>
       {/* Top bar: jen logo + uživatel (navigace je v sidebaru) */}
-      <header className="fixed top-0 left-0 right-0 h-14 border-b border-border bg-background/95 backdrop-blur z-50" suppressHydrationWarning>
+      <header className="fixed top-0 left-0 right-0 h-14 border-b border-border bg-background/95 backdrop-blur-sm z-50" suppressHydrationWarning>
         <div className="h-full flex items-center justify-between px-4 md:px-6">
           <Link href="/dashboard" className="flex items-center gap-2.5" suppressHydrationWarning>
-            <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shadow-sm shadow-primary/20">
               <span className="font-bold text-primary-foreground text-sm">R</span>
             </div>
             <span className="font-semibold tracking-tight text-foreground">
-              REALFORGE <span className="text-primary">AI</span>
+              Realforge <span className="text-primary font-bold">AI</span>
             </span>
           </Link>
           <div className="flex items-center gap-2">
@@ -73,7 +73,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       <div className="min-h-screen w-full pt-14">
         <aside className={cn(
-          "fixed left-0 top-14 bottom-0 border-r border-border bg-card/50 transition-all duration-200 z-40",
+          "fixed left-0 top-14 bottom-0 border-r border-border bg-card/80 backdrop-blur-sm transition-all duration-200 z-40",
           sidebarCollapsed ? "w-16" : "w-56"
         )}>
           <div className="flex flex-col h-full py-4 pl-3 pr-2">
